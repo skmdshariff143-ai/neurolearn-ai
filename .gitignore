@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env*
+!.env.example
+*.tsbuildinfo
+test-results/
+playwright-report/
+coverage/
+*.db
+.npm-cache/
+audit-report.json
+.playwright/
+audit-production.json
+formatting.log

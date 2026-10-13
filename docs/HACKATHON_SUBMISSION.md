@@ -1,0 +1,25 @@
+# Submission draft — not submitted
+
+**Name:** NeuroLearn AI. **Tagline:** Learn Anything. Understand Deeply. Grow Continuously. **Intended track:** Best Apps and Agents.
+
+Problem: learners can receive answers without discovering why their understanding is incomplete. Solution: an adaptive workspace that pairs concept checks, teaching strategy changes, interactive demonstrations, and targeted review. Target users: students, professionals, teachers, and lifelong learners.
+
+Implemented demonstration: curated transformer, Python, and quadratic paths; English/Telugu/Hindi explanation content; deterministic MCQs and tentative misconception feedback; interactive SVG/graph/fixed-code-trace labs; browser-local progress and editable schedules. Live-provider APIs also support generated assessments, rubric-based written-answer review, and editable generated course plans; these are validated through mock-transport tests and remain unverified live. Architecture and provider implementation are in ARCHITECTURE.md and AI_WORKFLOW.md.
+
+NVIDIA/Nebius details: adapter calls Token Factory's chat completions endpoint with an account-selected model ID. No inference access or actual NVIDIA runtime use has been verified. Fill in the exact model, smoke evidence, and live demonstration before submitting. Tavily source retrieval and optional redacted LangSmith traces are implemented; live verification is pending credentials.
+
+Repository intended URL: https://github.com/skmdshariff143-ai/neurolearn-ai. Working demo URL: pending. Video URL: pending. Educational results: none yet. Technical challenges: affordable access, multilingual accuracy, limited assessment evidence, safe model output, durable production identity and storage.
+
+## Video script (target 2:45)
+
+- 0:00–0:20: explain the learning problem and show Learn onboarding.
+- 0:20–0:45: answer a transformer diagnostic incorrectly; show tentative changing-flux diagnosis.
+- 0:45–1:15: show simpler teaching, worked example, Telugu/Hindi switch; disclose current inference mode.
+- 1:15–1:45: manipulate AC/DC and turns in the transformer lab; briefly show Python trace and quadratic graph.
+- 1:45–2:05: complete alternate practice and show real recorded scores.
+- 2:05–2:30: show server architecture and genuine Nebius/NVIDIA call evidence if obtained. If not, state the blocker rather than imply compliance.
+- 2:30–2:45: describe limitations and next steps; show approved public source/demo URLs.
+
+## Tool feedback to complete after genuine use
+
+For Nebius/NVIDIA: exact model, setup experience, measured latency/errors, structured-output quality, language limitations, credit usage if measured, and actionable feedback. For Tavily: source relevance/deduplication behavior and grounding limitations. For LangSmith: trace usefulness, redaction behavior, and evaluation workflow. Do not fill in observations from assumptions or fixture tests.

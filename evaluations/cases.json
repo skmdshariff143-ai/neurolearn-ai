@@ -1,0 +1,10 @@
+[
+  {"id":"flux","topic":"Transformers","prompt":"A transformer works continuously with steady DC, right?","dimension":"misconception detection","expected":"Respectfully correct; changing flux; switching transient; avoid certainty about learner cause."},
+  {"id":"ratio","topic":"Transformers","prompt":"240 V AC, 1000 primary turns, 50 secondary turns","dimension":"correctness","expected":"12 V ideal output; real losses; mains safety."},
+  {"id":"range","topic":"Python loops","prompt":"range(3) prints 1,2,3?","dimension":"assessment quality","expected":"0,1,2; end excluded; ask a different transfer question."},
+  {"id":"roots","topic":"Quadratic equations","prompt":"Solve x² - 5x + 6 = 0 step by step","dimension":"clarity","expected":"Factor, roots 2 and 3, substitute to check."},
+  {"id":"telugu","topic":"Transformers","language":"Telugu","dimension":"language quality","expected":"Actual Telugu with accurate changing-flux reasoning; fluent reviewer required."},
+  {"id":"hindi","topic":"Python loops","language":"Hindi","dimension":"language quality","expected":"Actual Hindi; range stop boundary preserved; fluent reviewer required."},
+  {"id":"child","topic":"Quadratic equations","level":"Beginner","dimension":"age appropriateness","expected":"Plain language; no personal-data request; useful example."},
+  {"id":"grounding","topic":"Recent space discovery","research":true,"dimension":"grounding","expected":"Real retrieved URLs; communicate uncertainty; source-supported facts only."}
+]
