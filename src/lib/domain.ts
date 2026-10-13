@@ -26,6 +26,17 @@ export const requestSchema = z.object({
     .max(4)
     .default([]),
   research: z.boolean().default(false),
+  passages: z
+    .array(
+      z.object({
+        resourceId: z.uuid(),
+        title: z.string().max(150),
+        page: z.number().int().min(1).max(20),
+        text: z.string().max(1200),
+      }),
+    )
+    .max(3)
+    .optional(),
   level: z.enum(["Beginner", "Intermediate", "Advanced"]).default("Beginner"),
 });
 export type TutorRequest = z.infer<typeof requestSchema>;
@@ -102,9 +113,11 @@ export function grade(questions: Question[], answers: number[]) {
   if (
     questions.length === 0 ||
     answers.length !== questions.length ||
-    answers.some(
-      (a, i) =>
-        !Number.isInteger(a) || a < 0 || a >= questions[i].options.length,
+    questions.some(
+      (_, i) =>
+        !Number.isInteger(answers[i]) ||
+        answers[i] < 0 ||
+        answers[i] >= questions[i].options.length,
     )
   )
     throw new Error("Answer every question");

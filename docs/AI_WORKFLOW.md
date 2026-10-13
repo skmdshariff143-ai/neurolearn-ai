@@ -1,5 +1,11 @@
 # AI and adaptive workflow
 
+Course orchestrator: ASSESS → DIAGNOSE → PLAN → TEACH → PRACTICE → EVALUATE → ADAPT → COMPLETE, another TEACH, or REVIEW. Validated edges/state replay reject altered scores/gaps and invalid attempt order. Two reteaching rounds; third failed practice pauses at REVIEW with progress intact. COMPLETE means passing these checks.
+
+One outline call covers 3–30 ordered days. Lesson actions load one diagnostic, one teaching response, one post-quiz and up to two reteaching responses, each allowing one transient retry. Reused practice questions cannot establish independent gains. Demo outlines/quizzes require no inference. On-demand lessons retain fixture/live mode and validated language/preferences.
+
+PDF retrieval matches Unicode words/combining marks, at most three 1200-character passages with genuine IDs/pages. UI requires consent; fixtures reject document grounding. Prompts treat passages as untrusted; injection resistance and factual grounding cannot be guaranteed. LangSmith excludes document contents.
+
 Validated transitions: INITIAL → DIAGNOSTIC → ANALYSIS → LESSON → PRACTICE → EVALUATION → MASTERED or RETEACH. Optional diagnostics allow INITIAL → LESSON; RETEACH → LESSON; MASTERED → PRACTICE. `MASTERED` is an internal state for correct concept checks, not a claim of subject mastery.
 
 Assessment scoring is deterministic. A wrong response records a concept and a tentative classification, because MCQ mistakes do not prove a particular psychological cause. Review explanations teach the rationale. The classroom switches to simpler instructions when a reteach link is used. Each strategy has distinct model instructions; language and level are included. One logical tutor can serve all teaching roles without expensive multi-agent hosting.

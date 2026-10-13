@@ -17,3 +17,5 @@ audit-*.json
 .integration-evidence/
 *.pem
 *.key
+public/pdf.worker.min.mjs
+public/pdfjs-LICENSE.txt

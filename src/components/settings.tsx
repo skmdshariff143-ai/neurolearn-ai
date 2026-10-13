@@ -4,6 +4,8 @@ import { browserRepository, defaultProfile } from "@/lib/repository";
 import type { Profile } from "@/lib/domain";
 import { Button } from "./ui/button";
 import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
+import { courseRepository } from "@/lib/courses";
+import { resources } from "@/lib/resources";
 export function Settings() {
   const [p, setP] = useState<Profile>(defaultProfile);
   const [status, setStatus] = useState("");
@@ -100,6 +102,16 @@ export function Settings() {
             />
           </div>
         </div>
+        <label htmlFor="pref-minutes">Daily study minutes</label>
+        <input
+          id="pref-minutes"
+          type="number"
+          min={5}
+          max={120}
+          required
+          value={p.minutes}
+          onChange={(e) => setP({ ...p, minutes: Number(e.target.value) })}
+        />
         <label className="check-label">
           <input
             type="checkbox"
@@ -147,6 +159,8 @@ export function Settings() {
                     {
                       profile: browserRepository.profile(),
                       activities: browserRepository.activities(),
+                      courses: courseRepository.load(),
+                      resources: resources.load(),
                     },
                     null,
                     2,

@@ -12,6 +12,49 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("provider safety", () => {
+  it("rejects invented document page identifiers and preserves supplied citations", async () => {
+    vi.stubEnv("AI_PROVIDER", "local");
+    vi.stubEnv("LOCAL_AI_MODEL", "test-model");
+    vi.stubEnv("LOCAL_AI_BASE_URL", "http://127.0.0.1:11434/v1");
+    const id = "11111111-1111-4111-8111-111111111111";
+    const response = (page: number) =>
+      new Response(
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify({
+                  title: "Flux",
+                  explanation: `Changing magnetic flux induces voltage. [${id}:p${page}]`,
+                  check: "Why AC?",
+                  concepts: ["flux"],
+                }),
+              },
+            },
+          ],
+        }),
+      );
+    const fetch = vi
+      .fn()
+      .mockResolvedValueOnce(response(2))
+      .mockResolvedValueOnce(response(1));
+    vi.stubGlobal("fetch", fetch);
+    const input = requestSchema.parse({
+      topic: "Transformers",
+      passages: [
+        {
+          resourceId: id,
+          title: "My notes",
+          page: 1,
+          text: "Changing flux induces voltage.",
+        },
+      ],
+    });
+    await expect(generateLesson(input)).rejects.toThrow(/page identifiers/);
+    expect((await generateLesson(input)).lesson.explanation).toContain(
+      `:${"p1"}`,
+    );
+  });
   it("does not spend research credits on a fixture lesson", async () => {
     vi.stubEnv("AI_PROVIDER", "fixture");
     const fetch = vi.fn();

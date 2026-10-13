@@ -19,6 +19,8 @@ describe("adaptive learning", () => {
     expect(grade(questions("transformers"), [1, 2]).score).toBe(100);
   });
   it("rejects missing or out-of-range answers", () => {
+    const sparse = new Array<number>(2); sparse[1]=2;
+    expect(() => grade(questions("transformers"), sparse)).toThrow();
     expect(() => grade(questions("python"), [1])).toThrow();
     expect(() => grade(questions("python"), [8, 1])).toThrow();
   });

@@ -50,6 +50,8 @@ export const browserRepository: LearningRepository = {
       "nl-roadmap",
       "nl-clarity",
       "nl-cloud-enabled",
+      "nl-courses",
+      "nl-resources",
     ])
       localStorage.removeItem(key);
   },

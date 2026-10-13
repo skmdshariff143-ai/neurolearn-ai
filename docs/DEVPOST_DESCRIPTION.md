@@ -1,5 +1,7 @@
 # NeuroLearn AI — Devpost description draft
 
+Final PRD additions: resumable course modules with on-demand lessons, stored checks, two reteaching rounds and targeted review; local text-PDF extraction with consented page retrieval; private optional hosted course/note library. Three demo modules revise the selected curated topic. Broad AI-generated courses and document-grounded teaching require verified live inference. Optional accounts/operational hosted launch remain outstanding.
+
 **Learn Anything. Understand Deeply. Grow Continuously.**
 
 NeuroLearn AI is an adaptive educational workspace for learners who need more than a quick answer. It pairs diagnostic concept checks with explanation switching, practical demonstrations, post-lesson practice, and targeted review. The learner can explore an idea in English, Telugu, or Hindi and revisit a confusing concept with a simpler explanation, analogy, worked example, or diagram.

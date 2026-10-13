@@ -4,6 +4,12 @@ import { resolve } from "node:path";
 import { traceable } from "langsmith/traceable";
 import { provider, research } from "../src/lib/providers";
 import { requestSchema } from "../src/lib/domain";
+import { outlineToCourse } from "../src/lib/courses";
+import {
+  saveCourse,
+  saveResource,
+  loadLibrary,
+} from "../src/lib/learning-store";
 import { telemetryClient, tracingEnabled } from "../src/lib/telemetry";
 import {
   loadGuest,
@@ -160,6 +166,46 @@ async function main() {
           });
           const own = await loadGuest(a),
             other = await loadGuest(b);
+          const course = outlineToCourse(
+            {
+              title: "Synthetic persistence test",
+              prerequisites: [],
+              objectives: [{ conceptId: "flux", description: "Changing flux" }],
+              units: [1, 2, 3].map((day) => ({
+                day,
+                topic: "Electrical transformers",
+                activity: "Synthetic smoke check",
+                revision: false,
+              })),
+            },
+            {
+              goal: "Verify repository isolation",
+              language: "English",
+              level: "Beginner",
+              minutes: 20,
+              provenance: "curated-demo",
+            },
+          );
+          await saveCourse(a, course);
+          await saveResource(a, {
+            id: randomUUID(),
+            title: "Synthetic smoke notes",
+            provenance: "learner-upload",
+            bytes: 100,
+            createdAt: new Date().toISOString(),
+            pages: [
+              { page: 1, text: "Synthetic non-personal educational passage." },
+            ],
+          });
+          const library = await loadLibrary(a),
+            otherLibrary = await loadLibrary(b);
+          if (
+            library.courses.length !== 1 ||
+            library.resources.length !== 1 ||
+            otherLibrary.courses.length ||
+            otherLibrary.resources.length
+          )
+            throw new Error("Library isolation failed");
           if (
             own.activities.length !== 1 ||
             own.activities[0].score !== 100 ||
@@ -170,6 +216,7 @@ async function main() {
             serverGradingVerified: true,
             writeReadVerified: true,
             crossGuestIsolationVerified: true,
+            courseAndDocumentIsolationVerified: true,
           });
         } finally {
           const cleanup = await Promise.allSettled([

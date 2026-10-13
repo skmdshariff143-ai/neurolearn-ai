@@ -1,5 +1,9 @@
 # Security review
 
+PDFs: 2 MiB/20 pages, 15-second parser teardown, 10,000 characters/page, 100,000 total. Same-origin PDF.js worker text extraction; this UI never executes embedded scripts/forms/files. Unsupported/encrypted/image-only files fail visibly. Browser profiles are shared-device boundaries, not accounts; avoid sensitive notes.
+
+Hosted library uses bounded bodies, origin checks, organizer access, shared 30/minute quota, validated snapshots, forced RLS and composite owner FKs. Separate local/hosted deletion; guest deletion cascades. Account linking, conflict detection, retention operations, backups and hosted checks remain outstanding. Production dependency audit including PDF.js returned zero advisories; existing development limitations below remain.
+
 API keys are server-only env vars. No NEXT_PUBLIC credential variables exist. React renders model explanations as text, preventing HTML execution. KaTeX receives a fixed developer-controlled formula. User code is never executed. Tutor requests validate topic/language/strategy and bound message size. Cross-origin requests are rejected, session cookies are HttpOnly/SameSite strict, and responses avoid caching learner text. Headers disable framing and MIME sniffing and restrict unnecessary browser capabilities.
 
 External calls use timeouts and bounded retries. Live errors never fall back to fixtures. Local inference accepts only loopback hostnames. Production fixtures need explicit opt-in. Public status shows booleans/configuration only, no secrets.

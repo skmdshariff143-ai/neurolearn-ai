@@ -1,5 +1,17 @@
 # Verified build status — 2026-10-13
 
+## Final PRD implementation milestone
+
+Audited actual HEAD f0dbfca (not stale ae11bb5); starting tree clean. Reran baseline typecheck, lint, 46 tests and production build. Extended existing routes/components without a rebuild: course outline/modules/on-demand lessons, diagnostic/practice attempts, bounded adaptive state replay, targeted gaps, resume/actual check completion, progress display, PDF text extraction/retrieval/consent, local/hosted library saving/deletion/export, normalized migration 003 and private API. See PRD.md inventory/plan and DATABASE_SCHEMA.md.
+
+Final verification: typecheck, lint, **55 unit/integration tests across 12 files**, production build, development config and explicit production-fixture config passed. Final production-server Playwright run: **18/18 passed in 1.9 minutes** on desktop/mobile, including actual authored text-PDF extraction/retrieval, consent enforcement, fixture refusal, deletion, course assessment/resume, existing learning flows, axe scans on all pages, keyboard/overflow and library API fail-closed/origin regressions. Production audit with PDF.js: **zero advisories**. Secret-pattern scan: no candidates in 111 source paths; limited detection only. All four credential smoke commands rerun: **BLOCKED, no external call**. Earlier run had 16 passes and two PDF-test selector failures, fixed by selecting the application alert instead of Next's hidden announcer. A browser run launched before build completion also failed to start and is not counted as a pass.
+
+Embedded PostgreSQL tests execute migration 003 and actual library repository writes with recorded attempts/revision/concept rows, repeat saves, cross-guest read/write rejection and cascaded deletion. These are not hosted tests. PDF.js registry compatibility checked: 6.4.299, Node >=22.13 or >=24; development uses Node24. Worker/license copied on install/prebuild, vendor worker excluded from application lint. PDF limits: 2 MiB, 20 pages, five notes, 100k extracted characters. Original binaries are not uploaded/retained.
+
+Fixed during this milestone: Telugu/Hindi combining-mark search, sparse-answer grading, reversed test answer choices, test type narrowing, vendor-worker lint scope and hidden-announcer selector. No failed test was reported as passing.
+
+**Outstanding:** optional authenticated account linking/recovery; hosted TLS/role/isolation, backup/retention/load verification; cross-device conflict handling; live generated-course/model and multilingual/source review; real learner pilot; approved remote push/deployment/live-URL testing/video/submission. Credentials are absent. Full universal-platform PRD and public launch are not complete. Existing five high development-tool advisories remain. No purchase, push or public deployment occurred.
+
 Started in an empty E:\neurolearn-ai folder with Node 24.21.0 and npm 11.19.0. The requested remote returned no refs. A local `main` Git repository now points to the requested origin. No remote push, public deployment, purchase, or account registration has occurred.
 
 ## Phase evidence

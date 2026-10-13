@@ -92,6 +92,9 @@ export const workflowRequestSchema = z.discriminatedUnion("task", [
     topic: z.string().min(2).max(200),
     language: languageSchema,
     days: z.number().int().min(3).max(30),
+    goal: z.string().min(2).max(300).optional(),
+    level: z.enum(["Beginner", "Intermediate", "Advanced"]).optional(),
+    minutes: z.number().int().min(5).max(120).optional(),
   }),
   z.object({
     task: z.literal("evaluate"),

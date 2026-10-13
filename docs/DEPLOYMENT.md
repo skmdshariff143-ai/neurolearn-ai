@@ -1,5 +1,9 @@
 # Phase 10 deployment instructions
 
+Final PRD: apply migration 003 after 002 before enabling hosted courses/notes. PostgreSQL smoke now also writes synthetic courses/notes and tests private read/write isolation, then deletes scratch guests. Actual hosted verification remains BLOCKED. Library uses existing persistence/access settings. No paid storage or original PDF retention introduced.
+
+Install/prebuild copies locked PDF.js worker/license into ignored public assets; include generated assets in deployment output. Verify PDF extraction/unsupported handling, consent, citations, separate deletion, course resume, guest isolation and operational retention on the approved hosted URL. Accounts, backup/load/retention verification remain launch gaps. No deployment executed.
+
 No push or deployment is authorized yet. Source configuration is prepared; no Vercel project, database, account, or billable resource was created. Do not run a deploy or marketplace provisioning command until the owner approves it.
 
 ## 1. Verify locally

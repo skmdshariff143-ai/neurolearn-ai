@@ -9,5 +9,6 @@ export default defineConfig([
     "node_modules/**",
     "playwright-report/**",
     "test-results/**",
+    "public/pdf.worker.min.mjs",
   ]),
 ]);

@@ -2,6 +2,11 @@
 
 Prepared locally; this is not a submitted entry.
 
+- [x] Resumable course/check workflow, bounded reteaching and PDF resource architecture implemented locally.
+- [ ] Verify text PDF extraction/consent/citations and course resume on approved hosted URL.
+- [ ] Verify migration 003, normalized library access isolation/deletion, retention and backup operations on hosted PostgreSQL.
+- [ ] Complete optional account linking/recovery before advertising account-based access.
+
 - [x] Project name, tagline, intended track and problem/solution draft.
 - [x] Functional local learning paths, labs, multilingual text and assessments.
 - [x] Source license, setup docs, architecture diagram and security audit.

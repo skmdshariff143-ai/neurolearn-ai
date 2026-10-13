@@ -14,6 +14,7 @@ import { browserRepository, defaultProfile } from "@/lib/repository";
 import { subjects } from "@/lib/content";
 import { Button } from "./ui/button";
 import { ConceptDiagram } from "./concept-diagram";
+import { resources, retrieve, type Resource } from "@/lib/resources";
 type Entry = {
   lesson: Lesson;
   sources: z.infer<typeof citationSchema>[];
@@ -64,6 +65,12 @@ export function Classroom() {
   const [research, setResearch] = useState(false);
   const [clarity, setClarity] = useState("");
   const [reteach, setReteach] = useState(false);
+  const [documents, setDocuments] = useState<Resource[]>([]);
+  const [documentId, setDocumentId] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [usedPassages, setUsedPassages] = useState<ReturnType<typeof retrieve>>(
+    [],
+  );
   useEffect(() => {
     queueMicrotask(() => {
       const q = new URLSearchParams(window.location.search).get("topic");
@@ -73,6 +80,7 @@ export function Classroom() {
         q ?? localStorage.getItem("nl-topic") ?? "Electrical transformers",
       );
       setProfile(browserRepository.profile());
+      setDocuments(resources.load());
       setReteach(
         new URLSearchParams(window.location.search).get("reteach") === "true",
       );
@@ -95,6 +103,18 @@ export function Classroom() {
     setBusy(true);
     setError("");
     try {
+      const document = documents.find((d) => d.id === documentId);
+      if (document && !consent)
+        throw new Error(
+          "Consent is required before sending PDF passages to inference.",
+        );
+      const passages = document
+        ? retrieve(document, `${topic} ${message}`)
+        : [];
+      if (document && !passages.length)
+        throw new Error(
+          "No relevant passage found. Try topic words present in your notes.",
+        );
       localStorage.setItem("nl-topic", topic);
       const response = await fetch("/api/tutor", {
         method: "POST",
@@ -105,6 +125,7 @@ export function Classroom() {
           strategy,
           message,
           research,
+          passages,
           level: profile.level,
           context: entries
             .filter((e) => e.topic === topic)
@@ -118,6 +139,7 @@ export function Classroom() {
       const raw = await response.json();
       if (!response.ok) throw new Error(raw.error ?? "Lesson unavailable");
       const entry = entrySchema.parse(raw);
+      setUsedPassages(passages);
       const next = [...entries.filter((e) => e.topic === topic), entry].slice(
         -20,
       );
@@ -226,6 +248,35 @@ export function Classroom() {
               Research with Tavily (requires configured credits)
             </label>
             <Button disabled={busy}>Teach me this topic</Button>
+            <label htmlFor="class-document">Use your PDF notes</label>
+            <select
+              id="class-document"
+              value={documentId}
+              onChange={(e) => {
+                setDocumentId(e.target.value);
+                setConsent(false);
+              }}
+            >
+              <option value="">No document</option>
+              {documents.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.title}
+                </option>
+              ))}
+            </select>
+            {documentId && (
+              <label className="check-label">
+                <input
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                />
+                I consent to send up to three relevant passages to the
+                configured inference provider. Do not send personal or sensitive
+                information.
+              </label>
+            )}
+            <Link href="/learn">Manage private browser PDF notes</Link>
           </form>
           {busy && (
             <div role="status" className="skeleton">
@@ -239,6 +290,21 @@ export function Classroom() {
           )}
           {last && (
             <article className="card">
+              {usedPassages.length > 0 && (
+                <details>
+                  <summary>
+                    Uploaded source passages used (learner material, unverified)
+                  </summary>
+                  {usedPassages.map((p, i) => (
+                    <blockquote key={i}>
+                      {p.text}
+                      <p>
+                        [{p.resourceId}:p{p.page}] · {p.title}
+                      </p>
+                    </blockquote>
+                  ))}
+                </details>
+              )}
               <div className="tutor-head">
                 <span className="tutor-avatar">
                   <BrainCircuit size={23} />

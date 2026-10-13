@@ -13,12 +13,15 @@ import {
 import { browserRepository } from "@/lib/repository";
 import type { Activity } from "@/lib/domain";
 import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
+import { courseRepository, type Course } from "@/lib/courses";
 export function Progress() {
   const [records, setRecords] = useState<Activity[]>([]);
   const [syncError, setSyncError] = useState("");
+  const [courses, setCourses] = useState<Course[]>([]);
   useEffect(() => {
     queueMicrotask(() => {
       setRecords(browserRepository.activities());
+      setCourses(courseRepository.load());
       if (cloudEnabled())
         void remoteRepository
           .load()
@@ -44,6 +47,31 @@ export function Progress() {
     <>
       <div className="eyebrow">Reflect · Review · Grow</div>
       <h1 className="page-title">Your progress, honestly recorded.</h1>
+      {courses.length > 0 && (
+        <section className="card" aria-label="Recorded course progress">
+          <h2>Your course checks</h2>
+          {courses.map((c) => {
+            const lessons = c.modules.flatMap((m) => m.lessons);
+            return (
+              <div key={c.id}>
+                <h3>{c.title}</h3>
+                <p>
+                  {lessons.filter((l) => l.cycle.state === "COMPLETE").length}/
+                  {lessons.length} completed lesson checks ·{" "}
+                  {lessons.reduce((n, l) => n + l.attempts.length, 0)} recorded
+                  attempts ·{" "}
+                  {c.provenance === "curated-demo"
+                    ? "Curated demonstration"
+                    : "Generated answer keys require review"}
+                </p>
+                <Link href="/roadmap">
+                  Resume course or review targeted gaps
+                </Link>
+              </div>
+            );
+          })}
+        </section>
+      )}
       {syncError && (
         <p role="status" className="notice">
           {syncError}

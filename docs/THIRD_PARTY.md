@@ -1,5 +1,7 @@
 # Third-party dependency licenses
 
+Final PRD adds Mozilla PDF.js/pdfjs-dist 6.4.299 (Apache-2.0). Its license is copied with the same-origin generated worker on install/build. Original package notices remain in dependencies; original learner PDFs are not redistributed. Curated links point to Python/OpenStax originals rather than copying their full works. MIT project license remains; no conflicting project license obligation was identified in these additions.
+
 Generated from the Phase 10 package-lock.json. Package code retains its respective license. No external artwork or copyrighted source passages were copied. Review notices before redistributing binaries. This is a metadata inventory, not a legal certification.
 
 Package | Version | License

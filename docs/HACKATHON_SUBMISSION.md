@@ -1,5 +1,7 @@
 # Submission draft — not submitted
 
+Final PRD demonstration variant (2:45): 0:00–0:20 introduce learner problem and explicit inference mode; 0:20–0:50 create/resume a course and take diagnostic; 0:50–1:20 show misconception-driven simpler teaching and Telugu/Hindi controls; 1:20–1:45 lab plus different post-test; 1:45–2:10 authorized text PDF retrieval with real page IDs and explicit consent (show live grounding only after verification); 2:10–2:30 recorded progress/private storage and architecture; 2:30–2:45 disclose remaining limitations and verified source/demo URLs. Hide credentials/cookies. Do not portray fixtures as live AI or prepared configuration as working hosted services.
+
 Phase 10 adds the concise [Devpost description](DEVPOST_DESCRIPTION.md), updated architecture, protected live access, hosted guest repository and [final checklist](SUBMISSION_CHECKLIST.md). No live-provider or hosted database success has been recorded; all published URLs remain pending.
 
 **Name:** NeuroLearn AI. **Tagline:** Learn Anything. Understand Deeply. Grow Continuously. **Intended track:** Best Apps and Agents.

@@ -1,5 +1,9 @@
 # Educational evaluation
 
+Reproducible PRD regressions: courses.test.ts checks bounded adaptation, dependency order, scores/gaps from submitted answers and completion integrity; resources.test.ts checks retrieval relevance, real page IDs, Telugu/Hindi matching and invalid upload boundaries. Embedded repository tests exercise normalized course/attempt/revision persistence and private note isolation. Existing learning/provider tests cover explanation calculations, strategy changes, languages, misconception cues and failure behavior. Browser course/PDF journeys cover actual interaction and resume; these tests do not grade live model or translation quality.
+
+Extend the adult pilot with one course module and an authorized non-sensitive text PDF. Record successful extraction, relevant/correct page citation, whether the learner can resume, and failure/reteach counts. Keep repeated demo checks separate from the independent pre/post comparison. An educator reviews AI-generated answer keys before treating scores as an educational measure. Subject and fluent-language reviewers score accuracy, clarity, grounding and appropriateness with written evidence. No real learner data or improvements have been collected.
+
 No learner pilot has been conducted. No learning gains are claimed. Automated fixture tests verify software behavior, not educational efficacy or live model quality.
 
 For each of 5–10 consenting volunteers: explain development mode and privacy; choose one curated path; collect pre-test score; record explanation strategies and iterations; collect post-test score using the alternate comparable questions; ask for clarity (1–5) and one confusing detail; optionally conduct delayed recall after 1–3 days. Keep participant codes, not names, in evaluation exports. Obtain appropriate guardian/legal review before involving minors.

@@ -13,6 +13,7 @@ test("production live calls and unconfigured persistence fail closed", async ({
     ).status(),
   ).toBe(503);
   expect((await request.get("/api/progress")).status()).toBe(503);
+  expect((await request.get("/api/library")).status()).toBe(503);
   expect(
     (
       await request.get("/api/progress", {
@@ -36,7 +37,7 @@ test("production live calls and unconfigured persistence fail closed", async ({
 test("same-origin mutation protection and CSP are present", async ({
   request,
 }) => {
-  for (const route of ["/api/access", "/api/progress"])
+  for (const route of ["/api/access", "/api/progress", "/api/library"])
     expect(
       (
         await request.post(route, {

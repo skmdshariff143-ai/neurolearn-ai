@@ -1,5 +1,7 @@
 # Hackathon compliance audit
 
+Final PRD additions (courses/private PDF notes/normalized PostgreSQL library) do not establish Nebius compliance or live educational efficacy. Mandatory NVIDIA/Nebius runtime remains BLOCKED. No public push/deployment, new credits, payment or submission occurred. Account linking/operational hosted verification and fluent review remain outstanding. [Official catalog API](https://docs.tokenfactory.nebius.com/api-reference/models/list-models) and [quickstart](https://docs.tokenfactory.nebius.com/quickstart) were rechecked; authenticated model availability/live smoke is still unavailable.
+
 Reviewed official [rules](https://nebiusglobalaihackathon.devpost.com/rules) and [resources](https://nebiusglobalaihackathon.devpost.com/resources) on 2026-10-13.
 
 The rules require a working app with a runtime Token Factory call or Nebius AI Cloud execution and an NVIDIA open-source model. Best Apps and Agents describes Nemotron-powered applications. A working demo/test build URL, public open-source code with setup instructions, a publicly visible YouTube demonstration under three minutes, track selection, and actual tool feedback are required. Entrant age/residence/other eligibility must be checked by the entrant; this project does not certify personal eligibility.

@@ -6,6 +6,8 @@
     "node": "24.x"
   },
   "scripts": {
+    "postinstall": "node scripts/prepare-pdf.mjs",
+    "prebuild": "node scripts/prepare-pdf.mjs",
     "dev": "next dev --webpack --hostname 127.0.0.1",
     "build": "next build --webpack",
     "start": "next start",
@@ -28,6 +30,7 @@
     "langsmith": "^0.10.12",
     "lucide-react": "^0.468.0",
     "next": "^16.0.0",
+    "pdfjs-dist": "^6.4.299",
     "pg": "^8.23.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

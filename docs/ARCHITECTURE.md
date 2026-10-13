@@ -1,5 +1,9 @@
 # Architecture
 
+Final PRD extension: roadmap adds CourseWorkspace; Learn adds ResourceLibrary; classroom retrieves consented PDF passages. PDF.js 6.4.299 loads on demand with a same-origin worker/license copied at install/build. Original binaries are neither uploaded nor retained. Extracted notes live locally or in optional private guest PostgreSQL.
+
+courses.ts validates dependencies, attempt-derived scores/gaps and state replay. learning-store.ts persists normalized entities through guest transactions; /api/library provides bounded, same-origin protected manual save/load/delete. See DATABASE_SCHEMA.md. Account linking remains outstanding.
+
 Next.js App Router serves ten pages and tutor, structured workflow, access, progress, and status APIs. Client components keep the original browser guest repository and offer optional hosted synchronization. Zod validates requests, model outputs, preferences, and assessment answers. Explicit fixture/Nebius/local selection never silently falls back.
 
 ```mermaid

@@ -13,6 +13,7 @@ export function Assessment() {
   const [result, setResult] = useState<ReturnType<typeof grade> | null>(null);
   const [state, setState] = useState<State>("INITIAL");
   const [error, setError] = useState("");
+  const [retryLimit, setRetryLimit] = useState(false);
   useEffect(() => {
     queueMicrotask(() => {
       setTopic(localStorage.getItem("nl-topic") ?? subjects[0].name);
@@ -38,6 +39,16 @@ export function Assessment() {
       const earlier = browserRepository
         .activities()
         .filter((a) => a.topic === topic && a.kind === "practice").length;
+      const history = browserRepository
+        .activities()
+        .filter((a) => a.topic === topic);
+      const lastDiagnostic = history.findLastIndex(
+        (a) => a.kind === "diagnostic",
+      );
+      const rounds = history
+        .slice(lastDiagnostic + 1)
+        .filter((a) => a.kind === "practice").length;
+      setRetryLimit(post && rounds >= 2);
       const activityId = crypto.randomUUID();
       browserRepository.saveActivity({
         id: activityId,
@@ -216,7 +227,7 @@ export function Assessment() {
                   : "Continue to your lesson"}
               </Link>
             </Button>
-            {post && result.diagnoses.length > 0 && (
+            {post && result.diagnoses.length > 0 && !retryLimit && (
               <Button
                 className="secondary"
                 onClick={() => {
@@ -232,6 +243,13 @@ export function Assessment() {
               <Link href="/progress">View recorded progress</Link>
             </Button>
           </div>
+          {retryLimit && result.diagnoses.length > 0 && (
+            <p className="notice">
+              Three practice rounds reached. Pause and review prerequisites with
+              a teacher. Take a fresh diagnostic when you are ready for a new
+              cycle.
+            </p>
+          )}
         </div>
       )}
     </>

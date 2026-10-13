@@ -6,6 +6,10 @@ An adaptive educational workspace built with Next.js, React, strict TypeScript, 
 
 **Development preview.** Fixture tutoring is deterministic and labelled; it is not live AI. Nebius/NVIDIA hackathon runtime compliance is **BLOCKED** until genuine inference succeeds. Nothing has been publicly deployed or pushed by this build.
 
+The roadmap now includes resumable learning courses with on-demand lessons, diagnostic/practice attempts, two bounded reteaching rounds and recorded completion checks. Learn accepts limited text PDFs (2 MiB/20 pages), extracts locally, searches real page passages and offers explicit optional private hosted saving. Classroom document inference requires consent and a live provider; fixtures do not pretend to use notes. Course/document exports and deletion are available. See [final PRD inventory](docs/PRD.md) and [database schema](docs/DATABASE_SCHEMA.md).
+
+Apply migration 003 after 002 for the private library API. Embedded SQL verification is not hosted verification. Generated keys, multilingual quality, optional account linking, hosted operations and public launch remain outstanding. The full universal-platform PRD is not yet complete.
+
 ## Run locally
 
 Node 24 is recommended. Exact resolved versions are in package-lock.json.

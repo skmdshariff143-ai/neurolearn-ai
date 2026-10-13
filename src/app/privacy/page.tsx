@@ -18,6 +18,16 @@ export default function Page() {
       </p>
       <h2>Server requests and external services</h2>
       <p>
+        PDF notes are parsed locally. Original files are not retained. Extracted
+        text, page identifiers and courses are saved in this browser. Anyone
+        using this browser profile can access them. Explicit hosted-save buttons
+        send selected extracted text or course records to the private guest
+        PostgreSQL repository, if configured. Classroom PDF consent sends up to
+        three matching passages to the selected inference provider. LangSmith
+        traces omit document content. Delete local and hosted copies separately;
+        Settings can delete all hosted guest records.
+      </p>
+      <p>
         Topic, explanation language, level, and any text you submit go to the
         application server. In live mode they are sent to the configured Nebius
         or local inference provider. When you select research, your topic is
