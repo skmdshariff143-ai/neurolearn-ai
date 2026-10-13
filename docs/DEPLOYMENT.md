@@ -6,6 +6,8 @@ Install/prebuild copies locked PDF.js worker/license into ignored public assets;
 
 No push or deployment is authorized yet. Source configuration is prepared; no Vercel project, database, account, or billable resource was created. Do not run a deploy or marketplace provisioning command until the owner approves it.
 
+For exact credential setup, classified evidence and manual publication steps, use [DEPLOYMENT_READINESS.md](DEPLOYMENT_READINESS.md) and [DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md). LangSmith regional/workspace settings are optional and documented in .env.example; leave them unset unless your account requires them. The hosted database smoke checks SQL permission denial for cross-guest overwrites and cascading deletion; a connection failure is not an isolation pass.
+
 ## 1. Verify locally
 
 Use Node 24 and the committed lockfile. Copy `.env.example` to ignored `.env.local` if absent; never overwrite an existing secret file. Run `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, then `npm run test:e2e`. Install matching Chromium with `npx playwright install chromium` if needed. In this workspace set `PLAYWRIGHT_BROWSERS_PATH=E:/neurolearn-ai/.playwright`. Browser tests start an isolated production fixture server and clear external credentials from its environment; stop your own local preview first if port 3000 is occupied.
@@ -20,7 +22,7 @@ Required server variables: `AI_PROVIDER=fixture`, `ALLOW_DEMO_MODE=true`, `PERSI
 
 Use an existing PostgreSQL database, or an owner-selected no-card/free option only after checking its terms. Supabase's transaction-pool connection is suitable for serverless Node clients; copy the connection details from the account dashboard and use verified TLS. Nothing was provisioned automatically.
 
-An authorized database administrator applies **only** `db/migrations/002_guest_postgres.sql`. Do not apply the old `db/proposals/001_authenticated_supabase.sql` as part of this guest deployment. Migration 002 is tested with embedded PostgreSQL but has not run against a hosted database.
+An authorized database administrator applies `db/migrations/002_guest_postgres.sql`, followed by `db/migrations/003_learning_entities.sql`, **once and in that order** on a new database. On an existing database where 002 is already applied, apply only the missing 003 after reviewing the schema. These migrations are not idempotent; do not rerun them blindly. Do not apply `db/proposals/001_authenticated_supabase.sql` as part of this guest deployment. Both migrations are tested with embedded PostgreSQL but have not run against a hosted database.
 
 Create a separate login role using your database's secure credential workflow and grant it membership:
 

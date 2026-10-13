@@ -55,3 +55,5 @@ Multiple-choice grading is deterministic. Written-answer review, generated diagn
 Install Playwright's matching Chromium browser before browser checks: `npx playwright install chromium`. This workspace installed it under `.playwright`; use `$env:PLAYWRIGHT_BROWSERS_PATH='E:/neurolearn-ai/.playwright'` here. Normal installations use Playwright's default cache. Build/dev use the supported Webpack option because Turbopack child-process CSS processing failed in this Windows environment.
 
 See [build status](docs/BUILD_STATUS.md), [deployment](docs/DEPLOYMENT.md), [compliance](docs/HACKATHON_COMPLIANCE.md), and [architecture](docs/ARCHITECTURE.md).
+
+Final integration preparation: [classified deployment readiness](docs/DEPLOYMENT_READINESS.md) lists exact private credentials and service setup; [manual deployment checklist](docs/DEPLOYMENT_CHECKLIST.md) separates local checks, live verification and approved publication. Both migrations (002 then 003) are required for the full hosted guest library.

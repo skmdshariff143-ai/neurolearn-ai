@@ -1,5 +1,7 @@
 # Hackathon compliance audit
 
+Final integration re-audit on 2026-10-13 confirmed ee83885's local tests/build and 18 browser tests. All four live smokes still report BLOCKED with no credentials and no external service call. See DEPLOYMENT_READINESS.md for classified evidence and exact owner actions. The enhanced hosted isolation/deletion smoke is prepared, not passed against a hosted database. Public code/demo/video and actual Nebius/NVIDIA runtime evidence remain pending; no compliance completion is claimed.
+
 Final PRD additions (courses/private PDF notes/normalized PostgreSQL library) do not establish Nebius compliance or live educational efficacy. Mandatory NVIDIA/Nebius runtime remains BLOCKED. No public push/deployment, new credits, payment or submission occurred. Account linking/operational hosted verification and fluent review remain outstanding. [Official catalog API](https://docs.tokenfactory.nebius.com/api-reference/models/list-models) and [quickstart](https://docs.tokenfactory.nebius.com/quickstart) were rechecked; authenticated model availability/live smoke is still unavailable.
 
 Reviewed official [rules](https://nebiusglobalaihackathon.devpost.com/rules) and [resources](https://nebiusglobalaihackathon.devpost.com/resources) on 2026-10-13.

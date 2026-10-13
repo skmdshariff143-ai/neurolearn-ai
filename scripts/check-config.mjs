@@ -1,6 +1,12 @@
 const production = process.argv.includes("--production");
 const provider = process.env.AI_PROVIDER ?? "fixture";
 const issues = [];
+if (
+  !["memory", "postgres"].includes(process.env.RATE_LIMIT_BACKEND ?? "memory")
+)
+  issues.push("RATE_LIMIT_BACKEND must be memory or postgres");
+if (!["true", "false"].includes(process.env.LANGSMITH_TRACING ?? "false"))
+  issues.push("LANGSMITH_TRACING must be true or false");
 if (!["fixture", "nebius", "local"].includes(provider))
   issues.push("AI_PROVIDER must be fixture, nebius, or local");
 if (

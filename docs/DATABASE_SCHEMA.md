@@ -2,6 +2,8 @@
 
 Apply 002 then 003 once as the migration administrator. Runtime must inherit neurolearn_app without superuser, ownership or RLS bypass. No hosted migration was executed.
 
+Final readiness smoke adds cross-guest overwrite checks that require SQLSTATE 42501, followed by owned-library readback and cascading deletion checks. Connection errors cannot count as permission-isolation success. Actual hosted execution remains BLOCKED by missing DATABASE_URL; embedded tests are the current evidence. See DEPLOYMENT_READINESS.md for restricted-login/TLS setup and manual verification.
+
 | Table | Relationship / meaning |
 | --- | --- |
 | guests | Hashed private guest capability/preferences, no account identity |

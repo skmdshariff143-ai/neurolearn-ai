@@ -1,5 +1,15 @@
 # Verified build status — 2026-10-13
 
+## Final integration and deployment readiness re-audit
+
+Started at clean ee83885; no application/data-structure rewrite. Read PRD, schema, deployment, compliance, environment and adapter/smoke code. Confirmed .env.local absent and no process credentials for Tavily, LangSmith, Nebius or PostgreSQL (presence flags only; no secret values printed). Independent rerun: typecheck, lint, **55/55 tests**, production build and **18/18 Playwright tests in 1.7 minutes** passed, including desktop/mobile, keyboard/axe, existing course/PDF/learning flows and API controls. Production dependency audit: zero advisories. These are local/embedded results, not a Vercel platform or hosted infrastructure pass.
+
+Corrected conflicting migration documentation: full guest deployment requires 002 then 003 once, never the old account proposal. Added DEPLOYMENT_READINESS.md and DEPLOYMENT_CHECKLIST.md with exact private credential/setup steps and Verified / Partially verified / Blocked / Not implemented classifications. Added optional LangSmith region/workspace environment comments. Preflight now rejects unsupported rate-limit backends and tracing flags. Hosted DB smoke now requires SQL permission denial (42501) for cross-guest overwrites and verifies cascading deletion, in addition to existing persistence/read isolation. These new hosted assertions are prepared, not live-verified.
+
+All four smoke commands were executed without configuration: **BLOCKED/no external service request**. Mandatory Nebius/NVIDIA runtime remains BLOCKED. Verified current official Tavily/LangSmith/Nebius/Vercel/Supabase documentation; that verifies setup references, not account activation/free-plan entitlement or runtime success. No account, purchase, migration on a hosted database, public push/deployment, video or submission occurred. Remaining production features/operational gaps are listed in the readiness report.
+
+Final preflight rerun after script edits: typecheck/lint and 55 tests passed; development and explicit production-fixture config passed; negative config checks correctly rejected unsupported rate backend and invalid tracing flag. Secret scan found no candidates in 113 tracked/non-ignored source paths; whitespace check passed. Read-only git ls-remote returned no remote refs. New hosted smoke rerun remained BLOCKED/no request. Public push/deployment still requires separate approval.
+
 ## Final PRD implementation milestone
 
 Audited actual HEAD f0dbfca (not stale ae11bb5); starting tree clean. Reran baseline typecheck, lint, 46 tests and production build. Extended existing routes/components without a rebuild: course outline/modules/on-demand lessons, diagnostic/practice attempts, bounded adaptive state replay, targeted gaps, resume/actual check completion, progress display, PDF text extraction/retrieval/consent, local/hosted library saving/deletion/export, normalized migration 003 and private API. See PRD.md inventory/plan and DATABASE_SCHEMA.md.

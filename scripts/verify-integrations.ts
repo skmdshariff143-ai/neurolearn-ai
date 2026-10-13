@@ -206,6 +206,29 @@ async function main() {
             otherLibrary.resources.length
           )
             throw new Error("Library isolation failed");
+          for (const write of [
+            () => saveCourse(b, course),
+            () => saveResource(b, library.resources[0]),
+          ]) {
+            let rejected = false;
+            try {
+              await write();
+            } catch (error) {
+              rejected =
+                typeof error === "object" &&
+                error !== null &&
+                "code" in error &&
+                error.code === "42501";
+            }
+            if (!rejected)
+              throw new Error("Cross-guest overwrite was not rejected");
+          }
+          const unchanged = await loadLibrary(a);
+          if (
+            unchanged.courses[0]?.id !== course.id ||
+            unchanged.resources[0]?.id !== library.resources[0].id
+          )
+            throw new Error("Owned library changed after forbidden writes");
           if (
             own.activities.length !== 1 ||
             own.activities[0].score !== 100 ||
@@ -217,7 +240,17 @@ async function main() {
             writeReadVerified: true,
             crossGuestIsolationVerified: true,
             courseAndDocumentIsolationVerified: true,
+            crossGuestOverwriteRejected: true,
           });
+          await deleteGuest(a);
+          const deleted = await loadLibrary(a);
+          if (
+            deleted.courses.length ||
+            deleted.resources.length ||
+            (await loadGuest(a)).activities.length
+          )
+            throw new Error("Cascading deletion failed");
+          evidence.cascadingDeletionVerified = true;
         } finally {
           const cleanup = await Promise.allSettled([
             deleteGuest(a),
