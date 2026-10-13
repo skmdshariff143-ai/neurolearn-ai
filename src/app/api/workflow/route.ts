@@ -1,4 +1,5 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
+import { flushTraces } from "@/lib/telemetry";
 import { cookies } from "next/headers";
 import { randomUUID } from "node:crypto";
 import { workflowRequestSchema } from "@/lib/learning-schemas";
@@ -6,7 +7,11 @@ import { runStructuredTask } from "@/lib/workflow";
 import { ProviderError } from "@/lib/providers";
 import { allowRequest } from "@/lib/rate-limit";
 import { isSameOrigin } from "@/lib/origin";
+import { boundedJSON, HTTPError } from "@/lib/http";
+import { authorizeExternal, accessCookie } from "@/lib/access";
+export const runtime = "nodejs";
 export async function POST(request: Request) {
+  after(flushTraces);
   if (!isSameOrigin(request))
     return NextResponse.json(
       { error: "Cross-origin request rejected" },
@@ -20,21 +25,15 @@ export async function POST(request: Request) {
       { status: 429 },
     );
   try {
-    const text = await request.text();
-    if (text.length > 12000)
-      return NextResponse.json({ error: "Request too large" }, { status: 413 });
-    let raw: unknown;
-    try {
-      raw = JSON.parse(text);
-    } catch {
-      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
-    }
+    const raw = await boundedJSON(request);
     const parsed = workflowRequestSchema.safeParse(raw);
     if (!parsed.success)
       return NextResponse.json(
         { error: "Invalid learning task input" },
         { status: 400 },
       );
+    if ((process.env.AI_PROVIDER ?? "fixture") !== "fixture")
+      await authorizeExternal(jar.get(accessCookie)?.value);
     const response = NextResponse.json(await runStructuredTask(parsed.data), {
       headers: { "Cache-Control": "no-store" },
     });
@@ -49,11 +48,15 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          e instanceof ProviderError
+          e instanceof ProviderError || e instanceof HTTPError
             ? e.message
             : "Learning task unavailable; please retry.",
       },
-      { status: e instanceof ProviderError ? e.status : 502 },
+      {
+        status:
+          e instanceof ProviderError || e instanceof HTTPError ? e.status : 502,
+        headers: { "Cache-Control": "no-store" },
+      },
     );
   }
 }

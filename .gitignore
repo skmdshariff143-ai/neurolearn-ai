@@ -12,3 +12,8 @@ audit-report.json
 .playwright/
 audit-production.json
 formatting.log
+audit-*.json
+.vercel/
+.integration-evidence/
+*.pem
+*.key

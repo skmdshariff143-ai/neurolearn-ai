@@ -4,8 +4,9 @@ export default function Page() {
       <div className="eyebrow">Privacy information · Development preview</div>
       <h1 className="page-title">Learn without sharing your identity.</h1>
       <p>
-        No name, email, age, or account is needed for the guest demonstration.
-        Do not enter sensitive personal details in lesson requests.
+        No name, email, age, or named account is needed for the guest
+        demonstration. Do not enter sensitive personal details in lesson
+        requests.
       </p>
       <h2>Data in your browser</h2>
       <p>
@@ -40,10 +41,16 @@ export default function Page() {
       </p>
       <h2>Retention</h2>
       <p>
-        Browser data remains until you clear it. Server-side learner records are
-        not persisted in this version. Third-party retention depends on your
-        configured service accounts and policies; review those policies before
-        enabling them.
+        Browser data remains until you clear it. Optional hosted guest storage
+        saves preferences and new server-graded curated assessment results after
+        you enable it in Settings. A private HttpOnly cookie controls access and
+        expires after 30 days. Losing that cookie loses access to the record.
+        Hosted records remain until you delete them or an operator performs
+        retention cleanup. Settings offers separate hosted deletion. Production
+        hosted access requires an organizer demonstration code; there is no
+        named account or cross-device recovery. Third-party retention depends on
+        your configured service accounts and policies; review those policies
+        before enabling them.
       </p>
     </article>
   );

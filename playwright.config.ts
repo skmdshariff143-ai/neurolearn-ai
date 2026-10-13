@@ -9,11 +9,19 @@ export default defineConfig({
   webServer: {
     command: "npm run start",
     url: "http://localhost:3000",
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     env: {
       AI_PROVIDER: "fixture",
       ALLOW_DEMO_MODE: "true",
       LANGSMITH_TRACING: "false",
+      LANGSMITH_API_KEY: "",
+      TAVILY_API_KEY: "",
+      NEBIUS_API_KEY: "",
+      DATABASE_URL: "",
+      PERSISTENCE_PROVIDER: "browser",
+      RATE_LIMIT_BACKEND: "memory",
+      LIVE_AI_ACCESS_CODE: "",
+      SESSION_SIGNING_SECRET: "",
     },
   },
   projects: [

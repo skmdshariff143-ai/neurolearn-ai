@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { browserRepository, defaultProfile } from "@/lib/repository";
 import type { Profile } from "@/lib/domain";
 import { Button } from "./ui/button";
+import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
 export function Settings() {
   const [p, setP] = useState<Profile>(defaultProfile);
   const [status, setStatus] = useState("");
@@ -28,6 +29,12 @@ export function Settings() {
           try {
             browserRepository.saveProfile(p);
             setStatus("Preferences saved in this browser.");
+            if (cloudEnabled())
+              void remoteRepository
+                .saveProfile(p)
+                .catch(() =>
+                  setStatus("Preferences saved locally; hosted sync failed."),
+                );
           } catch {
             setStatus("Storage unavailable; preferences could not be saved.");
           }

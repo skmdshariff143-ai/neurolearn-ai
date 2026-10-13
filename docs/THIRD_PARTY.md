@@ -1,6 +1,6 @@
 # Third-party dependency licenses
 
-Generated from package-lock.json. Package code retains its respective license. No external artwork or copyrighted source passages were copied. Review notices before redistributing binaries. This is a metadata inventory, not a legal certification.
+Generated from the Phase 10 package-lock.json. Package code retains its respective license. No external artwork or copyrighted source passages were copied. Review notices before redistributing binaries. This is a metadata inventory, not a legal certification.
 
 Package | Version | License
 --- | --- | ---
@@ -22,9 +22,36 @@ Package | Version | License
 @babel/template | 7.29.7 | MIT
 @babel/traverse | 7.29.10 | MIT
 @babel/types | 7.29.8 | MIT
+@electric-sql/pglite | 0.5.9 | Apache-2.0
 @emnapi/core | 1.10.0 | MIT
 @emnapi/runtime | 1.11.3 | MIT
 @emnapi/wasi-threads | 1.2.1 | MIT
+@esbuild/aix-ppc64 | 0.28.2 | MIT
+@esbuild/android-arm | 0.28.2 | MIT
+@esbuild/android-arm64 | 0.28.2 | MIT
+@esbuild/android-x64 | 0.28.2 | MIT
+@esbuild/darwin-arm64 | 0.28.2 | MIT
+@esbuild/darwin-x64 | 0.28.2 | MIT
+@esbuild/freebsd-arm64 | 0.28.2 | MIT
+@esbuild/freebsd-x64 | 0.28.2 | MIT
+@esbuild/linux-arm | 0.28.2 | MIT
+@esbuild/linux-arm64 | 0.28.2 | MIT
+@esbuild/linux-ia32 | 0.28.2 | MIT
+@esbuild/linux-loong64 | 0.28.2 | MIT
+@esbuild/linux-mips64el | 0.28.2 | MIT
+@esbuild/linux-ppc64 | 0.28.2 | MIT
+@esbuild/linux-riscv64 | 0.28.2 | MIT
+@esbuild/linux-s390x | 0.28.2 | MIT
+@esbuild/linux-x64 | 0.28.2 | MIT
+@esbuild/netbsd-arm64 | 0.28.2 | MIT
+@esbuild/netbsd-x64 | 0.28.2 | MIT
+@esbuild/openbsd-arm64 | 0.28.2 | MIT
+@esbuild/openbsd-x64 | 0.28.2 | MIT
+@esbuild/openharmony-arm64 | 0.28.2 | MIT
+@esbuild/sunos-x64 | 0.28.2 | MIT
+@esbuild/win32-arm64 | 0.28.2 | MIT
+@esbuild/win32-ia32 | 0.28.2 | MIT
+@esbuild/win32-x64 | 0.28.2 | MIT
 @eslint-community/eslint-utils | 4.10.1 | MIT
 @eslint-community/eslint-utils/node_modules/eslint-visitor-keys | 3.4.3 | Apache-2.0
 @eslint-community/regexpp | 4.12.2 | MIT
@@ -146,6 +173,7 @@ Package | Version | License
 @types/json5 | 0.0.29 | MIT
 @types/katex | 0.16.8 | MIT
 @types/node | 24.19.2 | MIT
+@types/pg | 8.23.1 | MIT
 @types/react | 19.3.0 | MIT
 @types/react-dom | 19.3.0 | MIT
 @types/use-sync-external-store | 0.0.6 | MIT
@@ -269,6 +297,7 @@ es-set-tostringtag | 2.1.0 | MIT
 es-shim-unscopables | 1.1.0 | MIT
 es-to-primitive | 1.3.4 | MIT
 es-toolkit | 1.52.0 | MIT
+esbuild | 0.28.2 | MIT
 escalade | 3.2.0 | MIT
 escape-string-regexp | 4.0.0 | MIT
 eslint | 9.39.5 | MIT
@@ -433,12 +462,24 @@ parent-module | 1.0.1 | MIT
 path-exists | 4.0.0 | MIT
 path-key | 3.1.1 | MIT
 path-parse | 1.0.7 | MIT
+pg | 8.23.1 | MIT
+pg-cloudflare | 1.4.1 | MIT
+pg-connection-string | 2.14.1 | MIT
+pg-int8 | 1.0.1 | ISC
+pg-pool | 3.14.0 | MIT
+pg-protocol | 1.16.1 | MIT
+pg-types | 2.2.0 | MIT
+pgpass | 1.0.5 | MIT
 picocolors | 1.1.1 | ISC
 picomatch | 2.3.2 | MIT
 playwright | 1.64.0 | Apache-2.0
 playwright-core | 1.64.0 | Apache-2.0
 possible-typed-array-names | 1.1.0 | MIT
 postcss | 8.5.30 | MIT
+postgres-array | 2.0.0 | MIT
+postgres-bytea | 1.0.1 | MIT
+postgres-date | 1.0.7 | MIT
+postgres-interval | 1.2.0 | MIT
 prelude-ls | 1.2.1 | MIT
 prettier | 3.9.10 | MIT
 prop-types | 15.8.1 | MIT
@@ -479,6 +520,7 @@ side-channel-list | 1.0.1 | MIT
 side-channel-map | 1.0.1 | MIT
 side-channel-weakmap | 1.0.2 | MIT
 source-map-js | 1.2.2 | BSD-3-Clause
+split2 | 4.2.0 | ISC
 stable-hash | 0.0.5 | MIT
 std-env | 4.3.0 | MIT
 stop-iteration-iterator | 1.1.0 | MIT
@@ -507,6 +549,7 @@ ts-api-utils | 2.5.0 | MIT
 tsconfig-paths | 3.15.0 | MIT
 tsconfig-paths/node_modules/json5 | 1.0.2 | MIT
 tslib | 2.8.1 | 0BSD
+tsx | 4.23.15 | MIT
 type-check | 0.4.0 | MIT
 typed-array-buffer | 1.0.3 | MIT
 typed-array-byte-length | 1.0.3 | MIT
@@ -545,6 +588,7 @@ which-collection | 1.0.2 | MIT
 which-typed-array | 1.1.24 | MIT
 why-is-node-running | 3.2.1 | MIT
 word-wrap | 1.2.5 | MIT
+xtend | 4.0.2 | MIT
 yallist | 3.1.1 | ISC
 yocto-queue | 0.1.0 | MIT
 zod | 4.6.7 | MIT

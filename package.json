@@ -2,15 +2,24 @@
   "name": "neurolearn-ai",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "next dev --webpack --hostname 127.0.0.1",
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "smoke:nebius": "node scripts/smoke-nebius.mjs"
+    "models:nebius": "node --env-file-if-exists=.env.local scripts/list-nebius-models.mjs",
+    "smoke:nebius": "node --env-file-if-exists=.env.local --import=tsx scripts/verify-integrations.ts --nebius",
+    "smoke:tavily": "node --env-file-if-exists=.env.local --import=tsx scripts/verify-integrations.ts --tavily",
+    "smoke:langsmith": "node --env-file-if-exists=.env.local --import=tsx scripts/verify-integrations.ts --langsmith",
+    "smoke:postgres": "node --env-file-if-exists=.env.local --import=tsx scripts/verify-integrations.ts --postgres",
+    "check:config": "node --env-file-if-exists=.env.local scripts/check-config.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.0",
@@ -19,6 +28,7 @@
     "langsmith": "^0.10.12",
     "lucide-react": "^0.468.0",
     "next": "^16.0.0",
+    "pg": "^8.23.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "recharts": "^3.0.0",
@@ -27,16 +37,19 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.0",
+    "@electric-sql/pglite": "^0.5.9",
     "@playwright/test": "^1.56.0",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/katex": "^0.16.7",
     "@types/node": "^24.0.0",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.0.0",
     "prettier": "^3.9.10",
     "tailwindcss": "^4.0.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.0",
     "vitest": "^5.0.4"
   }

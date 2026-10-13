@@ -8,6 +8,7 @@ import {
   type Citation,
 } from "./domain";
 import { fixture } from "./content";
+import { telemetryClient, tracingEnabled, tokenMetrics } from "./telemetry";
 export class ProviderError extends Error {
   constructor(
     message: string,
@@ -27,7 +28,10 @@ const completionSchema = z.object({
     .array(z.object({ message: z.object({ content: z.string() }) }))
     .min(1),
   usage: z
-    .object({ prompt_tokens: z.number(), completion_tokens: z.number() })
+    .object({
+      prompt_tokens: z.number().int().nonnegative(),
+      completion_tokens: z.number().int().nonnegative(),
+    })
     .optional(),
 });
 export async function boundedFetch(
@@ -94,6 +98,20 @@ class CompatibleProvider implements AIProvider {
     }
   }
   async structured(instructions: string, input: unknown) {
+    return traceable(() => this.invokeStructured(instructions, input), {
+      name: "provider-inference",
+      run_type: "llm",
+      client: telemetryClient,
+      tracingEnabled,
+      metadata: { ls_provider: this.kind, ls_model_name: this.model },
+      processInputs: () => ({ redacted: true }),
+      processOutputs: () => ({
+        redacted: true,
+        usage_metadata: tokenMetrics(this.usage),
+      }),
+    })();
+  }
+  private async invokeStructured(instructions: string, input: unknown) {
     const response = await boundedFetch(
       `${this.base.replace(/\/$/, "")}/chat/completions`,
       {
@@ -169,7 +187,8 @@ export function provider(): AIProvider {
   throw new ProviderError("Unknown AI_PROVIDER configuration.");
 }
 const cache = new Map<string, { at: number; sources: Citation[] }>();
-export async function research(topic: string): Promise<Citation[]> {
+const pendingResearch = new Map<string, Promise<Citation[]>>();
+async function retrieveResearch(topic: string): Promise<Citation[]> {
   if (!process.env.TAVILY_API_KEY)
     throw new ProviderError("Research requested but Tavily is not configured.");
   const cached = cache.get(topic);
@@ -216,11 +235,37 @@ export async function research(topic: string): Promise<Citation[]> {
   cache.set(topic, { at: Date.now(), sources });
   return sources;
 }
+export const research = traceable(
+  async (topic: string): Promise<Citation[]> => {
+    const key = topic.trim().toLowerCase();
+    const pending = pendingResearch.get(key);
+    if (pending) return pending;
+    const request = retrieveResearch(key);
+    pendingResearch.set(key, request);
+    try {
+      return await request;
+    } finally {
+      pendingResearch.delete(key);
+    }
+  },
+  {
+    name: "educational-research",
+    run_type: "retriever",
+    client: telemetryClient,
+    tracingEnabled,
+    processInputs: () => ({ redacted: true }),
+    processOutputs: (output) => ({ sourceCount: output.outputs.length }),
+  },
+);
 export const generateLesson = traceable(
   async (r: TutorRequest) => {
     const p = provider();
-    const sources = r.research ? await research(r.topic) : [];
     const started = Date.now();
+    if (r.research && p.kind === "fixture")
+      throw new ProviderError(
+        "Research-to-lesson requires a live provider; fixture lessons cannot incorporate retrieved sources.",
+      );
+    const sources = r.research ? await research(r.topic) : [];
     const lesson = await p.generate(r, sources);
     return {
       lesson,
@@ -236,6 +281,8 @@ export const generateLesson = traceable(
   },
   {
     name: "adaptive-lesson",
+    client: telemetryClient,
+    tracingEnabled,
     processInputs: () => ({ redacted: true }),
     processOutputs: (output) => ({
       redacted: true,

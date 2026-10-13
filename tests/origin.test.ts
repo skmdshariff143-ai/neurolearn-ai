@@ -1,5 +1,14 @@
 import { it, expect } from "vitest";
 import { isSameOrigin } from "../src/lib/origin";
+it("rejects cross-site browser GET requests even without an Origin header", () => {
+  expect(
+    isSameOrigin(
+      new Request("https://example.org/api/progress", {
+        headers: { "sec-fetch-site": "cross-site" },
+      }),
+    ),
+  ).toBe(false);
+});
 it("allows the incoming host even when the framework uses an internal canonical URL", () => {
   expect(
     isSameOrigin(

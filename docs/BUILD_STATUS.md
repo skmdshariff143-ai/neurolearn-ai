@@ -30,3 +30,27 @@ Started in an empty E:\neurolearn-ai folder with Node 24.21.0 and npm 11.19.0. T
 Earlier failures were fixed or worked around: JSX error, hydration lint issues, outdated vulnerable dependencies, missing matching Playwright browser, incorrect history selector, cold development compilation timeouts, and an origin mismatch between 127.0.0.1 and the framework's internal localhost URL. Origin validation now uses the incoming host and protocol; hostile/malformed origins remain rejected. Turbopack CSS child-process processing failed on Windows; build/dev use Webpack. Matching Chromium was downloaded to ignored `.playwright`. Browser sockets/build processes require outside-sandbox execution here.
 
 Actual rendered screenshots are in `docs/screenshots`. Axe checks do not certify full WCAG compliance. Live models, real learner outcomes, deployment, hosted DB isolation, and full production readiness remain unverified.
+
+## Phase 10 — deployment and real-integration preparation
+
+Baseline ae11bb5 was clean. GitHub API/read-only Git checks confirm a public, empty `main` repository with the intended origin. No push, cloud provisioning, public deployment, billing change or cloud migration occurred.
+
+Implemented: organizer access gate with signed expiring cookies; shared PostgreSQL quotas; streamed body bounds and cross-site Fetch Metadata checks; CSP; optional PostgreSQL guest repository with forced RLS, restricted-role checks, server grading, idempotent writes and deletion; consent/hosted-sync controls; chronology-preserving offline reconciliation; model-catalog command; adapter-based live smoke/evidence scripts; concurrent Tavily deduplication and rejection of fixture research; redacted nested LangSmith tracing, standard token metadata, aggregate evaluation metrics and serverless flush; config/secret checks; Vercel config and Node 24 engine. The original learning features remain.
+
+### Actual Phase 10 verification
+
+- `npm run typecheck`: passed on final application changes.
+- `npm run lint`: passed.
+- `npm test`: **46/46 passed in ten files**, including embedded PostgreSQL migration/RLS tests, actual repository tests through an embedded client bridge, token/role/body/access checks and offline reconciliation. These are not hosted PostgreSQL/network tests.
+- `npm run build`: passed; ten useful pages plus five API routes are generated.
+- Final `npm run test:e2e`: **14/14 passed in 1.7 minutes**, desktop/mobile learning flows and axe scans on all pages, plus production fail-closed access/storage, cross-site rejection and CSP regressions.
+- `npm run check:config`: passed for development fixture mode. `ALLOW_DEMO_MODE=true` with `check:config -- --production`: passed for the explicit production fixture configuration; reports live verification false.
+- Production dependency audit after new dependencies: **zero advisories**. Full install/audit retains five high development-only advisories in the unchanged unpatched braces/Next ESLint chain.
+- `models:nebius` and all four smoke commands were executed without credentials: **BLOCKED/no external call**, not passes. Private evidence files record the missing configuration. No `.env.local` or keys/database URL exist in this workspace/process.
+- `npm run check:secrets`: passed with no candidates across tracked/non-ignored source paths. `git diff --check`: passed. Final staged checks are recorded below. The scanner reports filenames only and cannot guarantee detection of every secret format.
+
+Resolved during this phase: reserved SQL identifier found by executing the migration; typed LangSmith feedback project association; TypeScript smoke-runner CommonJS/top-level-await compatibility; and an empty-value/newline false positive in the secret scanner. No failed check was counted as passed.
+
+**Deployment state:** ready to review/publish a labelled fixture demo after owner approval. Real hosted AI/storage remains blocked by credentials, restricted PostgreSQL setup and smoke verification. Public source push, hosted URL checks, actual video, pilot data and Devpost submission remain pending. See PHASE10_AUDIT.md, DEPLOYMENT.md and SUBMISSION_CHECKLIST.md for boundaries and next steps.
+
+Final staged whitespace check passed. Final staged secret-pattern check examined 98 tracked/non-ignored source paths and found no candidates. The changes span 58 files, including the preserved old migration moved to proposals. Final production dependency audit remains zero advisories; full audit remains five high development-only advisories. A labelled fixture preview is running locally for review; no public deployment exists.

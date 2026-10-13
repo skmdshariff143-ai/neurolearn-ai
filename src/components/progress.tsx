@@ -12,11 +12,22 @@ import {
 } from "recharts";
 import { browserRepository } from "@/lib/repository";
 import type { Activity } from "@/lib/domain";
+import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
 export function Progress() {
   const [records, setRecords] = useState<Activity[]>([]);
+  const [syncError, setSyncError] = useState("");
   useEffect(() => {
     queueMicrotask(() => {
       setRecords(browserRepository.activities());
+      if (cloudEnabled())
+        void remoteRepository
+          .load()
+          .then(() => setRecords(browserRepository.activities()))
+          .catch(() =>
+            setSyncError(
+              "Hosted progress could not be loaded. Showing saved browser records.",
+            ),
+          );
     });
   }, []);
   const topics = [...new Set(records.map((r) => r.topic))];
@@ -33,6 +44,11 @@ export function Progress() {
     <>
       <div className="eyebrow">Reflect · Review · Grow</div>
       <h1 className="page-title">Your progress, honestly recorded.</h1>
+      {syncError && (
+        <p role="status" className="notice">
+          {syncError}
+        </p>
+      )}
       <p className="page-intro">
         Scores come from completed concept checks in this browser. They are
         indicators for review, not proof of subject mastery.

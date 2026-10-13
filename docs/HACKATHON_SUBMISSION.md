@@ -1,5 +1,7 @@
 # Submission draft — not submitted
 
+Phase 10 adds the concise [Devpost description](DEVPOST_DESCRIPTION.md), updated architecture, protected live access, hosted guest repository and [final checklist](SUBMISSION_CHECKLIST.md). No live-provider or hosted database success has been recorded; all published URLs remain pending.
+
 **Name:** NeuroLearn AI. **Tagline:** Learn Anything. Understand Deeply. Grow Continuously. **Intended track:** Best Apps and Agents.
 
 Problem: learners can receive answers without discovering why their understanding is incomplete. Solution: an adaptive workspace that pairs concept checks, teaching strategy changes, interactive demonstrations, and targeted review. Target users: students, professionals, teachers, and lifelong learners.
@@ -17,7 +19,7 @@ Repository intended URL: https://github.com/skmdshariff143-ai/neurolearn-ai. Wor
 - 0:45–1:15: show simpler teaching, worked example, Telugu/Hindi switch; disclose current inference mode.
 - 1:15–1:45: manipulate AC/DC and turns in the transformer lab; briefly show Python trace and quadratic graph.
 - 1:45–2:05: complete alternate practice and show real recorded scores.
-- 2:05–2:30: show server architecture and genuine Nebius/NVIDIA call evidence if obtained. If not, state the blocker rather than imply compliance.
+- 2:05–2:30: show organizer unlock with its input masked, then genuine Nebius/NVIDIA lesson evidence, retrieved sources and a redacted trace if verified. Show the architecture diagram briefly. If live access is unavailable, state the blocker rather than simulate success. Do not reveal .env files, API keys, guest cookies or private trace links on video.
 - 2:30–2:45: describe limitations and next steps; show approved public source/demo URLs.
 
 ## Tool feedback to complete after genuine use

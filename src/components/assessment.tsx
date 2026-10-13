@@ -5,6 +5,7 @@ import { questions, subjects } from "@/lib/content";
 import { grade, transition, type State } from "@/lib/domain";
 import { browserRepository } from "@/lib/repository";
 import { Button } from "./ui/button";
+import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
 export function Assessment() {
   const [topic, setTopic] = useState(subjects[0].name);
   const [post, setPost] = useState(false);
@@ -37,8 +38,9 @@ export function Assessment() {
       const earlier = browserRepository
         .activities()
         .filter((a) => a.topic === topic && a.kind === "practice").length;
+      const activityId = crypto.randomUUID();
       browserRepository.saveActivity({
-        id: crypto.randomUUID(),
+        id: activityId,
         topic,
         kind: post ? "practice" : "diagnostic",
         score: r.score,
@@ -57,6 +59,19 @@ export function Assessment() {
       setResult(r);
       setState(current);
       setError("");
+      if (cloudEnabled())
+        void remoteRepository
+          .saveAssessment({
+            id: activityId,
+            topic,
+            kind: post ? "practice" : "diagnostic",
+            answers,
+          })
+          .catch(() =>
+            setError(
+              "Saved only in this browser; hosted sync failed. Reconnect in Settings and repeat the assessment if you want a server record.",
+            ),
+          );
     } catch (e) {
       setError(e instanceof Error ? e.message : "Cannot save result");
     }

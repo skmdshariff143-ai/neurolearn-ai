@@ -4,6 +4,7 @@ import {
   boundedFetch,
   research,
   teachingPrompt,
+  generateLesson,
 } from "../src/lib/providers";
 import { requestSchema } from "../src/lib/domain";
 afterEach(() => {
@@ -11,6 +12,41 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("provider safety", () => {
+  it("does not spend research credits on a fixture lesson", async () => {
+    vi.stubEnv("AI_PROVIDER", "fixture");
+    const fetch = vi.fn();
+    vi.stubGlobal("fetch", fetch);
+    await expect(
+      generateLesson(
+        requestSchema.parse({ topic: "Transformers", research: true }),
+      ),
+    ).rejects.toThrow("fixture lessons cannot");
+    expect(fetch).not.toHaveBeenCalled();
+  });
+  it("deduplicates concurrent research with equivalent topic keys", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test");
+    const fetch = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          results: [
+            {
+              title: "Reference",
+              url: "https://example.org/concurrent",
+              content: "Educational context",
+              score: 0.9,
+            },
+          ],
+        }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetch);
+    const results = await Promise.all([
+      research("Concurrent Test"),
+      research(" concurrent test "),
+    ]);
+    expect(results[0]).toEqual(results[1]);
+    expect(fetch).toHaveBeenCalledTimes(1);
+  });
   it("rejects missing Nebius keys without falling back", () => {
     vi.stubEnv("AI_PROVIDER", "nebius");
     vi.stubEnv("NEBIUS_API_KEY", "");

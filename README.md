@@ -38,11 +38,15 @@ npm run smoke:nebius
 
 Browser tests start the production server; run `npm run build` first. They exercise desktop and mobile classroom journeys, Telugu/Hindi switching, diagnosis/reteaching, persistence, labs, keyboard navigation, API errors, and axe scans on all ten pages.
 
-The smoke command does not load `.env.local` automatically; use `node --env-file=.env.local scripts/smoke-nebius.mjs` when ready. It makes one inference request; do not run it against an account without authorized credits.
+Phase 10 smoke commands load the ignored `.env.local` automatically. `npm run models:nebius` retrieves your authenticated Nemotron catalog without inference. After selecting an exact available JSON-capable model, run `npm run smoke:nebius -- --confirm-live` to verify the actual app adapter with one teaching request (at most one transient retry). Equivalent commands are `smoke:tavily`, `smoke:langsmith`, and `smoke:postgres`. Evidence goes into ignored `.integration-evidence/`; absent credentials report BLOCKED without an external call. Only run confirmed live checks with authorized credits/accounts.
 
 ## Honest limits
 
-Browser-local guest storage is implemented. Production authenticated Postgres persistence is not connected; a migration is supplied, with row-level policies, for future Supabase integration. Account creation is not exposed. Multiple-choice grading is deterministic. Written-answer rubric grading, generated diagnostics, and generated roadmaps have validated live-provider routes and review interfaces; they are tested with mock transport, not verified live. The roadmap also supplies a deterministic curated schedule. Two-question scores do not establish broad mastery. There are no real learner evaluation results yet.
+Browser guest storage remains the default. An opt-in PostgreSQL guest repository is implemented with a restricted runtime role, forced row-level security, private guest cookies, server-graded assessments, and deletion. Migration/repository isolation tests run against embedded PostgreSQL; **hosted persistence is not verified**. The deployable migration is `db/migrations/002_guest_postgres.sql`; the old Supabase account design is retained under `db/proposals`, not applied. No named accounts are exposed.
+
+Production external calls and hosted storage require an organizer access code, signed one-hour access cookie, and shared PostgreSQL request budgets. Configure these in server environment variables; learners unlock access in Settings without entering API keys. Open public fixtures need none of those credentials. Live-provider failure never switches to fixtures. See [deployment steps](docs/DEPLOYMENT.md) and run `npm run check:config -- --production` before releasing.
+
+Multiple-choice grading is deterministic. Written-answer review, generated diagnostics, and generated roadmaps remain unverified live. Traces redact learner text, retain actual token usage/latency and aggregate evaluation counts, and flush after route completion. The roadmap also provides a curated schedule. Two-item scores do not establish mastery; no real learner evaluation results exist.
 
 Install Playwright's matching Chromium browser before browser checks: `npx playwright install chromium`. This workspace installed it under `.playwright`; use `$env:PLAYWRIGHT_BROWSERS_PATH='E:/neurolearn-ai/.playwright'` here. Normal installations use Playwright's default cache. Build/dev use the supported Webpack option because Turbopack child-process CSS processing failed in this Windows environment.
 

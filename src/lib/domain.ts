@@ -31,7 +31,15 @@ export const requestSchema = z.object({
 export type TutorRequest = z.infer<typeof requestSchema>;
 export const citationSchema = z.object({
   title: z.string().max(200),
-  url: z.url().refine((u) => new URL(u).protocol === "https:"),
+  url: z.url().refine((u) => {
+    const url = new URL(u);
+    return (
+      url.protocol === "https:" &&
+      !url.username &&
+      !url.password &&
+      !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname)
+    );
+  }),
   excerpt: z.string().max(1200),
 });
 export const lessonSchema = z.object({

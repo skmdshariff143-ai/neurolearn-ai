@@ -1,5 +1,6 @@
 import { traceable } from "langsmith/traceable";
 import { provider, ProviderError } from "./providers";
+import { telemetryClient, tracingEnabled, tokenMetrics } from "./telemetry";
 import {
   diagnosticSchema,
   roadmapSchema,
@@ -9,6 +10,7 @@ import {
 export const runStructuredTask = traceable(
   async (input: WorkflowRequest) => {
     const p = provider();
+    const started = Date.now();
     if (!p.structured)
       throw new ProviderError(
         "This task requires a configured live inference provider. Fixture mode does not fabricate model-generated evaluations or plans.",
@@ -61,11 +63,41 @@ export const runStructuredTask = traceable(
           502,
         );
     }
-    return { result: parsed.data, provider: p.kind, demo: false };
+    const metrics =
+      input.task === "evaluate"
+        ? (() => {
+            const evaluation = writtenEvaluationSchema.parse(parsed.data);
+            return {
+              task: input.task,
+              earned: evaluation.criteria.reduce((sum, c) => sum + c.earned, 0),
+              possible: evaluation.criteria.reduce(
+                (sum, c) => sum + c.possible,
+                0,
+              ),
+              possibleMisconceptions: evaluation.misconceptions.length,
+            };
+          })()
+        : { task: input.task, validated: true };
+    return {
+      result: parsed.data,
+      provider: p.kind,
+      demo: false,
+      latencyMs: Date.now() - started,
+      usage_metadata: tokenMetrics(p.usage),
+      evaluationMetrics: metrics,
+    };
   },
   {
     name: "structured-learning-task",
+    client: telemetryClient,
+    tracingEnabled,
     processInputs: () => ({ redacted: true }),
-    processOutputs: () => ({ redacted: true }),
+    processOutputs: (output) => ({
+      redacted: true,
+      provider: output.provider,
+      latencyMs: output.latencyMs,
+      usage_metadata: output.usage_metadata,
+      evaluationMetrics: output.evaluationMetrics,
+    }),
   },
 );
