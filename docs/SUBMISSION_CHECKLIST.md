@@ -14,10 +14,12 @@ Prepared locally; this is not a submitted entry.
 - [x] PostgreSQL migration and embedded isolation/repository tests.
 - [x] Demonstration script and voluntary learner evaluation protocol.
 - [ ] Run confirmed real Nebius inference using an authenticated, available NVIDIA Nemotron model; retain model/date/request evidence.
-- [ ] Verify live Tavily sources and LangSmith remote traces/redaction/usage as configured.
+- [x] Verify Tavily retrieval and LangSmith trace/redaction/synthetic feedback readback.
+- [ ] Verify grounded live-model teaching, trace token usage and citation support with actual Nebius inference.
 - [ ] Verify hosted PostgreSQL role permissions, TLS, guest isolation and deletion if cloud progress is enabled.
 - [ ] Complete any required privacy/child/retention review before public production data collection.
-- [ ] Obtain owner approval and push the exact reviewed commit; confirm public source, README and detectable license on GitHub.
+- [x] Previously approved fixture source d4e6fb0 is public on GitHub; MIT license included.
+- [ ] Approve/push later reviewed improvements; verify the published final README and source match submission.
 - [ ] Obtain separate deployment approval; publish on the chosen no-billable setup and test the actual URL at desktop/mobile sizes.
 - [ ] Record a functioning-app demonstration under three minutes with secrets/cookies hidden; upload it publicly to YouTube.
 - [ ] Gather actual volunteer results if reporting them; otherwise explicitly state no pilot results exist.

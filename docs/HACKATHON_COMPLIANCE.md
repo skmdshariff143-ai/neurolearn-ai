@@ -1,5 +1,11 @@
 # Hackathon compliance audit
 
+## Current status — 2026-10-14
+
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+
+### Earlier evidence (historical)
+
 ## Activation assessment — 2026-10-14
 
 Owner supplied Supabase project reference zwylxrtytktpynmwlzmg. Its API endpoint is identified; the exact selected database pooler host is still missing and no Supabase connector is callable. Private DATABASE_URL and DATABASE_ADMIN_URL are absent. The read-only preflight stopped before any external request; database version, TLS, pooling, role privileges and whether migrations 002/003 already exist are NOT VERIFIED. No migration, role/password setup or synthetic hosted write occurred. Exact target approval is pending and will be requested only after reference/host and catalog assessment are available.
@@ -46,3 +52,5 @@ The hackathon submission is **not complete or technically compliant yet**. Tavil
 Official NVIDIA sources identify the [Nemotron 3 family](https://research.nvidia.com/labs/nemotron/Nemotron-3/) and public [model catalog](https://build.nvidia.com/models?label=Chat&q=nemotron). Nebius's [inference overview](https://docs.tokenfactory.nebius.com/ai-models-inference/overview) points to its account catalog; the [models endpoint](https://docs.tokenfactory.nebius.com/api-reference/models/list-models) requires authenticated access. Account-specific available IDs remain unverified because no key exists. The model-list command and adapter smoke test implement that check; no ID was invented or selected as a working deployment.
 
 Nebius, Tavily, LangSmith, and hosted PostgreSQL verification commands were executed with missing configuration and recorded BLOCKED/no external request. The mandatory Nebius/NVIDIA blocker remains. Embedded PostgreSQL tests and fixture/browser tests do not satisfy it. Vercel config and protected live access are prepared; nothing was provisioned or published.
+
+Official rules/resources rechecked on 2026-10-14: runtime Nebius plus an NVIDIA open model remains mandatory; Best Apps and Agents calls for Nemotron. Demo/test-build URL, public licensed source, a publicly visible YouTube video under three minutes, track selection and genuine tool feedback remain required. Public source d4e6fb0 is verified by git remote SHA, while later local source is unpublished. Current model IDs must come from the authenticated Nebius catalog; JSON mode support must be checked on the selected model. No account-model access is verified. See TOOL_FEEDBACK.md for actual optional-tool feedback; no Nebius performance or learner efficacy is invented.

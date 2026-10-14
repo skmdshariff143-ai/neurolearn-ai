@@ -1,5 +1,11 @@
 # Product requirements and implementation scope
 
+## Current status — 2026-10-14
+
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+
+### Earlier evidence (historical)
+
 2026-10-14 rollout policy: the limited-access fixture preview intentionally disables uploads, private persistence and live integrations until hosted isolation/runtime evidence exists. In this build, learning state is temporary and resets on reload; existing local records are untouched. Full local-development capabilities remain available with the safe-preview flag false. See PREVIEW_DEPLOYMENT_CHECKLIST.md; this is not production launch or hackathon compliance.
 
 ## Final PRD inventory and prioritized plan — 2026-10-13

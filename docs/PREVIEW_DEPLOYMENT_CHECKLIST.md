@@ -1,6 +1,10 @@
 # Limited-access fixture preview — 2026-10-14
 
-This supersedes open-fixture publication instructions for the requested limited-access preview. No push/deployment has been approved or performed. Application safeguards are not a replacement for hosted access protection.
+## Current status — 2026-10-14
+
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+
+### Earlier evidence (historical)
 
 ## Required environment (set before build)
 

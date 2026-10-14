@@ -4,7 +4,7 @@ Learn Anything. Understand Deeply. Grow Continuously.
 
 An adaptive educational workspace built with Next.js, React, strict TypeScript, Tailwind, Radix-based UI primitives, Zod, Recharts, and KaTeX. Three curated learning paths demonstrate diagnosis, explanation switching, multilingual teaching, interactive labs, assessment, and recorded progress.
 
-**Development preview.** Fixture tutoring is deterministic and labelled; it is not live AI. Nebius/NVIDIA hackathon runtime compliance is **BLOCKED** until genuine inference succeeds. Nothing has been publicly deployed or pushed by this build.
+**Development preview.** Fixture tutoring is deterministic and labelled; it is not live AI. Nebius/NVIDIA hackathon runtime compliance is **BLOCKED** until genuine inference succeeds. The public repository contains approved fixture commit d4e6fb0. Later local improvements have not been pushed. No working hosted preview is verified.
 
 For the requested limited-access preview, set `NEXT_PUBLIC_SAFE_PREVIEW=true` before building and follow [the restricted preview checklist](docs/PREVIEW_DEPLOYMENT_CHECKLIST.md). This disables uploads, stored learner data and live integrations, preserves old browser records without reading them, and labels every page. Vercel access protection and the actual hosted URL still need verification before inviting reviewers. Normal local development remains available with the flag false.
 
@@ -18,7 +18,7 @@ Node 24 is recommended. Exact resolved versions are in package-lock.json.
 
 ```powershell
 npm ci
-Copy-Item .env.example .env.local
+if (!(Test-Path .env.local)) { Copy-Item .env.example .env.local }
 npm run dev
 ```
 
@@ -30,7 +30,7 @@ Open http://localhost:3000. Choose Learn → Electrical transformers → classro
 - `AI_PROVIDER=nebius`: set server-side `NEBIUS_API_KEY` and the exact `NEBIUS_MODEL` ID available in your Token Factory account. Use an NVIDIA Nemotron model for the intended track. No silent fallback.
 - `AI_PROVIDER=local`: use a loopback OpenAI-compatible inference server, e.g. Ollama's `/v1` endpoint, with `LOCAL_AI_MODEL` set to an installed model. Hardware/model availability has not been verified.
 
-Research is opt-in and requires `TAVILY_API_KEY`. Tracing is opt-in using `LANGSMITH_API_KEY` and `LANGSMITH_TRACING=true`. Inputs and outputs are redacted from tracing. None of these keys are needed for ordinary demo development.
+Tavily retrieval is verified by a real HTTP 200 smoke (four results, two accepted sources). Research is opt-in and requires `TAVILY_API_KEY`. Tracing is opt-in using `LANGSMITH_API_KEY` and `LANGSMITH_TRACING=true`. Inputs and outputs are redacted from tracing. LangSmith trace write/read, redaction and synthetic feedback are verified. Full live-model tracing and source-grounded teaching remain unverified without authorized inference. None of these keys are needed for ordinary demo development.
 
 ```powershell
 npm run typecheck

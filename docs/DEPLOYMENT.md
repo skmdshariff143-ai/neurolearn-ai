@@ -96,3 +96,11 @@ Restricted Preview still requires LANGSMITH_TRACING=false and no key; safePrevie
 ## Hosted PostgreSQL setup
 
 See [POSTGRES_SETUP.md](POSTGRES_SETUP.md) for documentation-based Supabase Free compatibility, exact restricted-role setup, migration approval boundary, pooling/TLS and synthetic-cleanup checks. No target is configured and no hosted test has passed.
+
+## Staged live promotion and rollback (prepared only)
+
+Do not reuse fixture Preview secrets or deploy it as a live environment. After separate approval, provision/link a distinct live project, establish restricted PostgreSQL plus verified TLS/migrations/isolation/cleanup, configure strong organizer/session controls and shared quotas, then enable authorized Nebius/Tavily/LangSmith server-side. Apply NEXT_PUBLIC_SAFE_PREVIEW=false only for that explicit live build. Verify actual hosted guest flows and redacted inference before inviting adult pilot users. No child onboarding or public production launch is authorized here.
+
+Record the exact release SHA, environment versions (not secret values), migration/catalog state and verified rollback deployment. Smoke the protected live candidate before promotion. If inference, quotas, isolation or protection fails, stop traffic/disable live access and revert to the last verified protected release without deleting learner records. Prefer forward-compatible schema changes; a deployment rollback must not automatically DROP schema or reverse data migrations. Database restoration/destructive recovery requires separate target approval and a verified backup. Free-tier backups/retention and real rollback remain untested.
+
+Explicit --target preview still produced Production in CLI 64.0.2 on this project. The task-created deployment was canceled/deleted, with no assigned alias. Do not retry or bypass protection until the correct target behavior is resolved with Vercel. No working deployment URL is available.

@@ -1,5 +1,11 @@
 # Submission draft — not submitted
 
+## Current status — 2026-10-14
+
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+
+### Earlier evidence (historical)
+
 Final PRD demonstration variant (2:45): 0:00–0:20 introduce learner problem and explicit inference mode; 0:20–0:50 create/resume a course and take diagnostic; 0:50–1:20 show misconception-driven simpler teaching and Telugu/Hindi controls; 1:20–1:45 lab plus different post-test; 1:45–2:10 authorized text PDF retrieval with real page IDs and explicit consent (show live grounding only after verification); 2:10–2:30 recorded progress/private storage and architecture; 2:30–2:45 disclose remaining limitations and verified source/demo URLs. Hide credentials/cookies. Do not portray fixtures as live AI or prepared configuration as working hosted services.
 
 Phase 10 adds the concise [Devpost description](DEVPOST_DESCRIPTION.md), updated architecture, protected live access, hosted guest repository and [final checklist](SUBMISSION_CHECKLIST.md). No live-provider or hosted database success has been recorded; all published URLs remain pending.

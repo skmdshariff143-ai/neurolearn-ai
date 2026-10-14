@@ -15,6 +15,63 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("provider safety", () => {
+  it("requires real research lessons to cite supplied web source IDs", async () => {
+    vi.stubEnv("AI_PROVIDER", "local");
+    vi.stubEnv("LOCAL_AI_MODEL", "test-model");
+    vi.stubEnv("TAVILY_API_KEY", "test");
+    const fetch = vi.fn().mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          results: [
+            {
+              title: "Flux reference",
+              url: "https://example.org/flux",
+              content: "Changing flux induces voltage",
+              score: 0.9,
+            },
+          ],
+        }),
+      ),
+    );
+    for (const citation of [
+      "[source:99]",
+      "[source:bogus] [source:1]",
+      "[source:01]",
+      "",
+      "[source:1]",
+    ])
+      fetch.mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            choices: [
+              {
+                message: {
+                  content: JSON.stringify({
+                    title: "Flux",
+                    explanation: `Changing flux induces voltage. ${citation}`,
+                    check: "Why AC?",
+                    concepts: ["flux"],
+                  }),
+                },
+              },
+            ],
+          }),
+        ),
+      );
+    vi.stubGlobal("fetch", fetch);
+    const input = requestSchema.parse({
+      topic: "web-citation-regression",
+      research: true,
+    });
+    for (let attempt = 0; attempt < 4; attempt++)
+      await expect(generateLesson(input)).rejects.toThrow(
+        "supplied source identifiers",
+      );
+    expect((await generateLesson(input)).lesson.explanation).toContain(
+      "[source:1]",
+    );
+    expect(fetch).toHaveBeenCalledTimes(6);
+  });
   it("accepts moderately ranked topical citations while rejecting unrelated, weak and unsafe results", () => {
     const source = {
       title: "Transformer electromagnetic induction",
@@ -67,13 +124,11 @@ describe("provider safety", () => {
     "sanitizes Tavily HTTP %s without automatic retries",
     async (status, category) => {
       vi.stubEnv("TAVILY_API_KEY", "test");
-      const fetch = vi
-        .fn()
-        .mockResolvedValue(
-          new Response("PRIVATE RESPONSE MUST NOT APPEAR", {
-            status: Number(status),
-          }),
-        );
+      const fetch = vi.fn().mockResolvedValue(
+        new Response("PRIVATE RESPONSE MUST NOT APPEAR", {
+          status: Number(status),
+        }),
+      );
       vi.stubGlobal("fetch", fetch);
       await expect(searchTavily("topic")).rejects.toMatchObject({
         diagnostics: { httpStatus: status, errorCategory: category },
