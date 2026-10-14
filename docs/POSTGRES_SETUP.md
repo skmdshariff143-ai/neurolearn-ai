@@ -1,5 +1,12 @@
 # Supabase Free PostgreSQL setup
 
+## Activation assessment — 2026-10-14
+
+Owner supplied Supabase project reference zwylxrtytktpynmwlzmg. Its API endpoint is identified; the exact selected database pooler host is still missing and no Supabase connector is callable. Private DATABASE_URL and DATABASE_ADMIN_URL are absent. The read-only preflight stopped before any external request; database version, TLS, pooling, role privileges and whether migrations 002/003 already exist are NOT VERIFIED. No migration, role/password setup or synthetic hosted write occurred. Exact target approval is pending and will be requested only after reference/host and catalog assessment are available.
+
+Use ignored .env.database-admin.local for a temporary DATABASE_ADMIN_URL, read only by the assessment/migration process; Next.js must not receive administrator credentials. Keep restricted DATABASE_URL in .env.local. Neither file nor connection value should enter Git or chat. Non-secret project reference and exact Connect-panel host may be shared. The migration order and restricted-role SQL in POSTGRES_SETUP.md remain unchanged.
+
+
 Prepared 2026-10-14; no hosted project or migration was created. Selected candidate: Supabase Free. [Pricing](https://supabase.com/pricing) currently lists $0/month, 500 MB database storage, two active projects and pausing after one week of inactivity; automatic backups are not included. Do not enable paid plans/add-ons. Plan manual backups and restore checks before using genuine learner data.
 
 ## Compatibility

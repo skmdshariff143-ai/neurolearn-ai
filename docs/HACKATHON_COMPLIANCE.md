@@ -1,5 +1,12 @@
 # Hackathon compliance audit
 
+## Activation assessment — 2026-10-14
+
+Owner supplied Supabase project reference zwylxrtytktpynmwlzmg. Its API endpoint is identified; the exact selected database pooler host is still missing and no Supabase connector is callable. Private DATABASE_URL and DATABASE_ADMIN_URL are absent. The read-only preflight stopped before any external request; database version, TLS, pooling, role privileges and whether migrations 002/003 already exist are NOT VERIFIED. No migration, role/password setup or synthetic hosted write occurred. Exact target approval is pending and will be requested only after reference/host and catalog assessment are available.
+
+Use ignored .env.database-admin.local for a temporary DATABASE_ADMIN_URL, read only by the assessment/migration process; Next.js must not receive administrator credentials. Keep restricted DATABASE_URL in .env.local. Neither file nor connection value should enter Git or chat. Non-secret project reference and exact Connect-panel host may be shared. The migration order and restricted-role SQL in POSTGRES_SETUP.md remain unchanged.
+
+
 ## Current compliance — 2026-10-14
 
 Mandatory Nebius/NVIDIA runtime remains BLOCKED: no key/model or successful live inference. Tavily retrieval is VERIFIED by an actual HTTP 200 smoke returning two topical HTTPS citations; it does not replace the required runtime or prove learning outcomes. LangSmith trace write/read, redaction and synthetic feedback are VERIFIED on 2026-10-14; hosted PostgreSQL isolation remains BLOCKED. These tracing checks do not prove live-model quality or learner outcomes. Public source at d4e6fb0 was previously published; the new local repair is not pushed. No working hosted demo, completed video, pilot results or Devpost submission exists. The prior unintended Production-classified deployment was canceled/deleted.

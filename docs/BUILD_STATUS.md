@@ -1,5 +1,12 @@
 # Verified build status — 2026-10-13
 
+## Activation assessment — 2026-10-14
+
+Owner supplied Supabase project reference zwylxrtytktpynmwlzmg. Its API endpoint is identified; the exact selected database pooler host is still missing and no Supabase connector is callable. Private DATABASE_URL and DATABASE_ADMIN_URL are absent. The read-only preflight stopped before any external request; database version, TLS, pooling, role privileges and whether migrations 002/003 already exist are NOT VERIFIED. No migration, role/password setup or synthetic hosted write occurred. Exact target approval is pending and will be requested only after reference/host and catalog assessment are available.
+
+Use ignored .env.database-admin.local for a temporary DATABASE_ADMIN_URL, read only by the assessment/migration process; Next.js must not receive administrator credentials. Keep restricted DATABASE_URL in .env.local. Neither file nor connection value should enter Git or chat. Non-secret project reference and exact Connect-panel host may be shared. The migration order and restricted-role SQL in POSTGRES_SETUP.md remain unchanged.
+
+
 ## Hosted PostgreSQL preparation — 2026-10-14
 
 Selected candidate: Supabase Free; not provisioned. Existing standard PostgreSQL schema appears compatible; no required extension/schema rewrite. DATABASE_URL is absent and no target/migration approval exists. npm run smoke:postgres returned BLOCKED/no external request. Hosted TLS, pooler-role compatibility, isolation and cleanup remain unverified. Follow POSTGRES_SETUP.md for owner steps; preserve migration order 002 then 003.
@@ -163,3 +170,5 @@ Final LangSmith-task regression: typecheck and lint passed; 67/67 tests passed i
 PostgreSQL-task local checks so far: typecheck/lint passed; 74 tests passed in 15 files, including actual embedded migrations/repository isolation and non-creating cleanup. Restricted-preview config/build passed and 8/8 preview desktop/mobile browser/accessibility tests passed in 1.3 minutes. A separate normal fixture build passed; its full 18-test browser suite is being completed. No hosted test is counted as passed.
 
 Final PostgreSQL-task validation: full preserved-mode browser suite 18/18 passed in 1.8 minutes, in addition to restricted-preview 8/8 in 1.3 minutes. Both production builds passed. Typecheck/lint and 74/74 tests passed. Limited secret scan examined 120 source paths with no candidates; 104 browser assets and tracked files contained no configured credential values. git diff --check passed. Original migrations unchanged; no remote migrations/creation, live persistence test, push or deployment performed. DATABASE_URL remains unset.
+
+Activation-assessment local regression: typecheck/lint passed; 74/74 tests passed in 15 files; normal fixture browser suite 18/18 passed in 2.1 minutes; safe-preview browser/accessibility suite 8/8 passed in 1.4 minutes. Both production builds and preview configuration passed. Limited secret scan examined 120 files with no candidates; whitespace check passed. These are local/embedded results. Exact pooler host and ignored administrator credential file remain missing. No hosted catalog/role/TLS assessment, migration, persistence/isolation/deletion smoke, push or deployment occurred. Original migration and application code are unchanged.
