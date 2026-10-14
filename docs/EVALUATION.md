@@ -1,5 +1,18 @@
 # Educational evaluation
 
+## REA pilot worksheet — prepared, not executed
+
+Use 5–10 consenting adults, including adults studying school-level material; no children before privacy/consent review. No participants or scores exist. Use codes, allow withdrawal/deletion, and separate aggregate measures from raw answers. Protected fixture progress clears on reload; do not commit participant records.
+
+| Domain | Original pre/post pair for educator review | Criteria |
+| --- | --- | --- |
+| School mathematics | Roots of x²−5x+6=0 versus x²−7x+12=0 | Roots 2/3 versus 3/4; factoring, signs, substitution |
+| College electrical engineering | Ideal AC: 12 V, 200/100 turns versus 20 V, 500/200 turns | 6 V versus 8 V; ratio direction, changing flux, assumptions |
+| Programming | Trace range(3) with even-number condition versus range(4) with i<2 | Outputs 0/2 versus 0/1; bounds, branching, reasoning |
+| Professional negotiation | Unclear deadline priorities versus conflicting scope priorities | Clarify interests, state assumptions, conditional tradeoffs and verification; reviewable rubric, not a universally correct tactic |
+
+An educator must approve answer keys, comparability and difficulty before scoring; these tasks are not silently added to fixtures. Record actual initial/post correct/possible or rubric points, strategies, reteach iterations, reviewer agreement with tentative diagnoses, clarity 1–5, accessibility issues, response latency and failures. Label fixture/live mode and arrange fluent Telugu/Hindi review. If agreed, conduct delayed recall after 1–3 days with a new example and record revision success separately. Tiny sample, reused tests, selection bias and lack of a control group prohibit causal claims. REA.md records the research and software checks; no learner efficacy is inferred from them.
+
 Reproducible PRD regressions: courses.test.ts checks bounded adaptation, dependency order, scores/gaps from submitted answers and completion integrity; resources.test.ts checks retrieval relevance, real page IDs, Telugu/Hindi matching and invalid upload boundaries. Embedded repository tests exercise normalized course/attempt/revision persistence and private note isolation. Existing learning/provider tests cover explanation calculations, strategy changes, languages, misconception cues and failure behavior. Browser course/PDF journeys cover actual interaction and resume; these tests do not grade live model or translation quality.
 
 Extend the adult pilot with one course module and an authorized non-sensitive text PDF. Record successful extraction, relevant/correct page citation, whether the learner can resume, and failure/reteach counts. Keep repeated demo checks separate from the independent pre/post comparison. An educator reviews AI-generated answer keys before treating scores as an educational measure. Subject and fluent-language reviewers score accuracy, clarity, grounding and appropriateness with written evidence. No real learner data or improvements have been collected.

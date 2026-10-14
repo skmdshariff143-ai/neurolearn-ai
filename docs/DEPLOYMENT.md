@@ -1,5 +1,13 @@
 # Phase 10 deployment instructions
 
+## Current protected deployments and future promotion
+
+Existing protected Production bootstrap/Preview remain at approved d4e6fb0. Preserve All Deployments authentication, disabled automatic Git deployments and the six fixture-only values in both environments; never add live credentials there. New local changes require separate push and deployment approval. VERCEL_DEPLOYMENT_RESULT.md records actual hosted checks; REA.md records unpublished learning changes.
+
+For a future live environment, use a separately approved project/configuration: verify an authorized NVIDIA/Nebius model first, restricted PostgreSQL TLS/role/isolation and cleanup, server-side quotas, signed guest/access cookies, consent/retention and age safeguards, source grounding and trace redaction. Start protected with synthetic records and reviewed answer keys; do not publicly onboard children. Never give runtime code DATABASE_ADMIN_URL. Do not provision anything paid or flip the existing fixture environment into live mode.
+
+Promotion is gated on real hosted workflow/security/latency checks, judge-access planning, current source approval and separate release permission. Retain the prior reviewed build and configuration for rollback. On failure, stop new live requests, restore the approved protected build/configuration and investigate; never disable authentication or delete learner records as a shortcut. Database changes and rollback operations need a separately reviewed plan; existing migrations 002 → 003 remain unchanged.
+
 Final PRD: apply migration 003 after 002 before enabling hosted courses/notes. PostgreSQL smoke now also writes synthetic courses/notes and tests private read/write isolation, then deletes scratch guests. Actual hosted verification remains BLOCKED. Library uses existing persistence/access settings. No paid storage or original PDF retention introduced.
 
 Install/prebuild copies locked PDF.js worker/license into ignored public assets; include generated assets in deployment output. Verify PDF extraction/unsupported handling, consent, citations, separate deletion, course resume, guest isolation and operational retention on the approved hosted URL. Accounts, backup/load/retention verification remain launch gaps. No deployment executed.

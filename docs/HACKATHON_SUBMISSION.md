@@ -1,8 +1,22 @@
 # Submission draft — not submitted
 
+## Final sprint correction — 2026-10-14
+
+This section supersedes historical pending-deployment/integration wording below. Public source and both protected fixture deployments use d4e6fb0. Demo: https://neurolearn-2nymaifwu-shaik-mahammad-shariff-s-projects.vercel.app/. Later local REA/Settings improvements are not published. Tavily retrieval and LangSmith redacted trace/read/synthetic feedback have retained live evidence. Nebius inference, grounded teaching and hosted PostgreSQL remain blocked; no pilot, video or submission is complete.
+
+Original REA innovation adds evidence-derived revision dates, recall before rereading, a revealable self-check guide and changed reteaching strategy. Lessons remain on demand. See REA.md, EVALUATION.md and DEVPOST_DESCRIPTION.md for research, pilot and final product narrative.
+
+Official [rules](https://nebiusglobalaihackathon.devpost.com/rules) and [resources](https://nebiusglobalaihackathon.devpost.com/resources) were reviewed. Judge access is outstanding: private demos need testing instructions and supported access, not the owner's Vercel password or a new bypass link. The working protected URL alone does not establish judge access. Required runtime, public licensed source/setup, English materials, public YouTube video under three minutes, tool feedback and existing-project update explanation must be verified before submission.
+
+### Recording storyboard additions
+
+Use the 2:45 script below. In the 1:45–2:05 progress shot, demonstrate recall/self-check/revision from the locally reviewed build until new publication is approved; explicitly identify that difference. Capture actual graded attempts and no efficacy statistics. In the integration shot, show genuine sanitized Tavily/LangSmith evidence; show a Nebius lesson/model only after real verification, otherwise disclose its absence. Record desktop or mobile interaction, not invented screenshots.
+
+Before recording: use synthetic data, hide notifications, keys, environment files, cookies, organizer codes and private trace access; check microphone/captions, time the cut below three minutes, and exclude third-party music/assets without permission. Review all claims against actual evidence. No recording, YouTube upload or Devpost submission occurred here.
+
 ## Current status — 2026-10-14
 
-Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback retain VERIFIED live evidence. Nebius inference and hosted PostgreSQL remain BLOCKED by missing/placeholder configuration. Both protected fixture deployments are READY at approved d4e6fb0 with All Deployments authentication and automatic Git deployments disabled. Later local REA, Settings and accessibility improvements are not pushed or deployed. See VERCEL_DEPLOYMENT_RESULT.md for hosted evidence and limits, REA.md for original learning adaptations, and BUILD_STATUS.md for executed checks. Grounded live teaching and learner efficacy remain unverified.
 
 ### Earlier evidence (historical)
 
@@ -16,9 +30,9 @@ Problem: learners can receive answers without discovering why their understandin
 
 Implemented demonstration: curated transformer, Python, and quadratic paths; English/Telugu/Hindi explanation content; deterministic MCQs and tentative misconception feedback; interactive SVG/graph/fixed-code-trace labs; browser-local progress and editable schedules. Live-provider APIs also support generated assessments, rubric-based written-answer review, and editable generated course plans; these are validated through mock-transport tests and remain unverified live. Architecture and provider implementation are in ARCHITECTURE.md and AI_WORKFLOW.md.
 
-NVIDIA/Nebius details: adapter calls Token Factory's chat completions endpoint with an account-selected model ID. No inference access or actual NVIDIA runtime use has been verified. Fill in the exact model, smoke evidence, and live demonstration before submitting. Tavily source retrieval and optional redacted LangSmith traces are implemented; live verification is pending credentials.
+NVIDIA/Nebius details: adapter calls Token Factory's chat completions endpoint with an account-selected model ID. No inference access or actual NVIDIA runtime use has been verified. Fill in the exact model, smoke evidence, and live demonstration before submitting. Tavily source retrieval and LangSmith trace/redaction/feedback have verified live smoke evidence; full live-model tracing remains blocked.
 
-Repository intended URL: https://github.com/skmdshariff143-ai/neurolearn-ai. Working demo URL: pending. Video URL: pending. Educational results: none yet. Technical challenges: affordable access, multilingual accuracy, limited assessment evidence, safe model output, durable production identity and storage.
+Repository intended URL: https://github.com/skmdshariff143-ai/neurolearn-ai. Protected fixture demo URL: https://neurolearn-2nymaifwu-shaik-mahammad-shariff-s-projects.vercel.app/; judge access is pending. Video URL: pending. Educational results: none yet. Technical challenges: affordable access, multilingual accuracy, limited assessment evidence, safe model output, durable production identity and storage.
 
 ## Video script (target 2:45)
 

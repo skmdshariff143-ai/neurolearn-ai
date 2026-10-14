@@ -52,10 +52,42 @@ test("diagnosis, reteaching, post-test, and persistence", async ({ page }) => {
   await expect(page.getByText("2 of 2 correct · 100%")).toBeVisible();
   await page.goto("/progress");
   await expect(
+    page.getByRole("heading", { name: "Recall before you reread" }),
+  ).toBeVisible();
+  await page
+    .getByText("Show a self-check guide", { exact: true })
+    .first()
+    .click();
+  await expect(
+    page
+      .getByText("This self-check does not record a score.", { exact: false })
+      .first(),
+  ).toBeVisible();
+  expect(
+    (
+      await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+        .analyze()
+    ).violations,
+  ).toEqual([]);
+  await expect(
     page.getByText("Electrical transformers", { exact: true }).first(),
   ).toBeVisible();
   await page.reload();
   await expect(page.getByText("Completed assessments")).toBeVisible();
+});
+test("a review deep link opens the intended assessment instead of the remembered topic", async ({
+  page,
+}) => {
+  await page.goto(
+    "/assessment?topic=Python%20loops%20%26%20conditions&mode=practice",
+  );
+  await expect(page.getByLabel("Learning path", { exact: true })).toHaveValue(
+    "Python loops & conditions",
+  );
+  await expect(page.getByLabel("Assessment", { exact: true })).toHaveValue(
+    "post",
+  );
 });
 test("interactive labs", async ({ page }) => {
   await page.goto("/labs");

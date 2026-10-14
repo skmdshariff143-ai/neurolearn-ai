@@ -14,6 +14,8 @@ import { browserRepository } from "@/lib/repository";
 import type { Activity } from "@/lib/domain";
 import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
 import { courseRepository, type Course } from "@/lib/courses";
+import { revisionQueue, recallPrompt } from "@/lib/revision";
+import { topicKey } from "@/lib/content";
 export function Progress() {
   const [records, setRecords] = useState<Activity[]>([]);
   const [syncError, setSyncError] = useState("");
@@ -34,6 +36,7 @@ export function Progress() {
     });
   }, []);
   const topics = [...new Set(records.map((r) => r.topic))];
+  const reviews = revisionQueue(records, courses);
   const chart = topics.map((topic) => ({
     topic,
     diagnostic: records.find(
@@ -81,6 +84,57 @@ export function Progress() {
         Scores come from completed concept checks in this browser. They are
         indicators for review, not proof of subject mastery.
       </p>
+      {reviews.length > 0 && (
+        <section className="card stack" aria-labelledby="revision-title">
+          <h2 id="revision-title">Recall before you reread</h2>
+          <p>
+            Suggested reviews use recorded concept checks. Checks less than 24
+            hours apart do not extend the interval. These are practice
+            suggestions, not proof of mastery.
+          </p>
+          {reviews.slice(0, 12).map((review) => (
+            <div key={JSON.stringify([review.topic, review.concept])}>
+              <h3>
+                {review.topic} · {review.concept}
+              </h3>
+              <p>
+                {review.due ? "Review due" : "Next suggested review"}:{" "}
+                <time dateTime={review.dueAt}>
+                  {new Date(review.dueAt).toLocaleDateString()}
+                </time>
+              </p>
+              <p>{recallPrompt(review.topic, review.concept)}</p>
+              <details>
+                <summary>Show a self-check guide</summary>
+                <p>
+                  Compare your reasoning with the lesson: check the core rule,
+                  each step, units or assumptions, and where your example stops
+                  applying. If unsure, ask for a worked example. This self-check
+                  does not record a score.
+                </p>
+                <Link
+                  className="button secondary"
+                  href={`/classroom?topic=${encodeURIComponent(review.topic)}&reteach=true`}
+                >
+                  Revisit this concept
+                </Link>
+              </details>
+              <Link
+                className="button secondary"
+                href={
+                  topicKey(review.topic)
+                    ? `/assessment?topic=${encodeURIComponent(review.topic)}&mode=practice`
+                    : "/roadmap"
+                }
+              >
+                {topicKey(review.topic)
+                  ? "Take a graded check"
+                  : "Resume course checks"}
+              </Link>
+            </div>
+          ))}
+        </section>
+      )}
       {records.length === 0 ? (
         <div className="card">
           <h2>Your first chapter is waiting.</h2>
@@ -114,7 +168,11 @@ export function Progress() {
             <p className="fine">
               The two question sets are different but cover the same concepts.
             </p>
-            <div style={{ height: 300 }} aria-label="Assessment scores chart">
+            <div
+              role="group"
+              style={{ height: 300 }}
+              aria-label="Assessment scores chart"
+            >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chart}>
                   <CartesianGrid strokeDasharray="3 3" />

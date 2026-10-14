@@ -1,5 +1,7 @@
 # Architecture
 
+REA additions: revision.ts derives concept review suggestions from existing activity/course evidence without extra storage or inference; Progress exposes original recall/self-check prompts. CourseWorkspace uses bounded retry count to select steps/simple/worked teaching. Assessment deep links honor an explicit bounded topic. Protected deployments remain at approved d4e6fb0 and are not changed by local builds. See REA.md for decisions and VERCEL_DEPLOYMENT_RESULT.md for hosted evidence.
+
 Final PRD extension: roadmap adds CourseWorkspace; Learn adds ResourceLibrary; classroom retrieves consented PDF passages. PDF.js 6.4.299 loads on demand with a same-origin worker/license copied at install/build. Original binaries are neither uploaded nor retained. Extracted notes live locally or in optional private guest PostgreSQL.
 
 courses.ts validates dependencies, attempt-derived scores/gaps and state replay. learning-store.ts persists normalized entities through guest transactions; /api/library provides bounded, same-origin protected manual save/load/delete. See DATABASE_SCHEMA.md. Account linking remains outstanding.

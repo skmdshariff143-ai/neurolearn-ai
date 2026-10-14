@@ -24,11 +24,17 @@ export const subjects = [
   },
 ];
 export function topicKey(topic: string) {
-  return /transform|electr|ట్రాన్స్|ट्रांस/i.test(topic)
+  return /^(?:electrical\s+)?transformers?$|^ట్రాన్స్‌ఫార్మర్(?:లు)?$|^ट्रांसफॉर्मर$/i.test(
+    topic.trim(),
+  )
     ? "transformers"
-    : /python|loop|పైథాన్|पायथन/i.test(topic)
+    : /^python(?:\s+loops?(?:\s*(?:&|and)\s*conditions?)?)?$|^loops?\s*(?:&|and)\s*conditions?$|^పైథాన్$|^पायथन$/i.test(
+          topic.trim(),
+        )
       ? "python"
-      : /quadratic|equation|ద్విఘాత|द्विघात/i.test(topic)
+      : /^quadratics?(?:\s+equations?)?$|^ద్విఘాత(?: సమీకరణాలు)?$|^द्विघात(?: समीकरण)?$/i.test(
+            topic.trim(),
+          )
         ? "quadratics"
         : null;
 }

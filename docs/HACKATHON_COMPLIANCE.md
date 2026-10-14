@@ -1,8 +1,16 @@
 # Hackathon compliance audit
 
+## Final sprint — 2026-10-14
+
+This section supersedes historical pending-hosting wording below. Protected fixture deployments are VERIFIED for authorized demonstrations; see VERCEL_DEPLOYMENT_RESULT.md. New REA code remains local. Mandatory NVIDIA/Nebius runtime is BLOCKED (NEBIUS_API_KEY/NEBIUS_MODEL absent); hosted PostgreSQL is BLOCKED (DATABASE_ADMIN_URL placeholder, DATABASE_URL absent). Tavily/LangSmith retained live evidence is verified; grounded model teaching, live-model tracing, pilot, video and submission are NOT TESTED.
+
+The [official rules](https://nebiusglobalaihackathon.devpost.com/rules) require genuine Nebius/NVIDIA runtime, public licensed source/setup, working demo/test access, English materials, public YouTube video under three minutes and actual tool feedback. Protected judge access remains unarranged; preserve authentication and arrange an approved testing method. Fixtures do not satisfy runtime compliance.
+
+Nebius [quickstart](https://docs.tokenfactory.nebius.com/quickstart) confirms `/v1/chat/completions`, Bearer authentication and model IDs. [JSON documentation](https://docs.tokenfactory.nebius.com/ai-models-inference/json) supports json_object but requires model-card JSON support; Zod validation remains essential. The [public Nemotron catalog](https://nebius.com/services/token-factory/models/nvidia-nemotron-models-inference) shows `nvidia/Nemotron-3_5-Lightning` as an example, not an account-verified selection. The existing smoke checks the account catalog before inference. No credential, inference request or paid service was introduced.
+
 ## Current status — 2026-10-14
 
-Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback retain VERIFIED live evidence. Nebius inference and hosted PostgreSQL remain BLOCKED by missing/placeholder configuration. Both protected fixture deployments are READY at approved d4e6fb0 with All Deployments authentication and automatic Git deployments disabled. Later local REA, Settings and accessibility improvements are not pushed or deployed. See VERCEL_DEPLOYMENT_RESULT.md for hosted evidence and limits, REA.md for original learning adaptations, and BUILD_STATUS.md for executed checks. Grounded live teaching and learner efficacy remain unverified.
 
 ### Earlier evidence (historical)
 

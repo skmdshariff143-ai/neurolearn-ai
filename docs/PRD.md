@@ -1,8 +1,10 @@
 # Product requirements and implementation scope
 
+Final sprint local additions: evidence-derived concept review schedules, recall/self-explanation prompts with revealable scaffolding, changed strategy on the second bounded reteach, prerequisite context and correct assessment topic deep links. Settings preview descriptions now match transient storage. See REA.md for references, original adaptations and unproven educational benefits. Universal live generation, hosted persistence and human efficacy remain blocked/unverified; existing protected deployments are preserved at d4e6fb0.
+
 ## Current status — 2026-10-14
 
-Tavily retrieval and LangSmith trace/redaction/synthetic feedback are VERIFIED; Nebius inference and hosted PostgreSQL remain BLOCKED on missing/placeholder configuration. Public source is approved d4e6fb0; new local changes are not pushed. The explicit Preview CLI attempt was classified Production, immediately canceled and deleted; no safe hosted URL exists. See BUILD_STATUS.md for evidence and pending launch gates. Web citation identity now has regression coverage; factual grounding still requires live inference and educator review.
+Tavily retrieval and LangSmith trace/redaction/synthetic feedback retain VERIFIED live evidence. Nebius inference and hosted PostgreSQL remain BLOCKED by missing/placeholder configuration. Both protected fixture deployments are READY at approved d4e6fb0 with All Deployments authentication and automatic Git deployments disabled. Later local REA, Settings and accessibility improvements are not pushed or deployed. See VERCEL_DEPLOYMENT_RESULT.md for hosted evidence and limits, REA.md for original learning adaptations, and BUILD_STATUS.md for executed checks. Grounded live teaching and learner efficacy remain unverified.
 
 ### Earlier evidence (historical)
 

@@ -1,8 +1,22 @@
 import { describe, it, expect } from "vitest";
 import { grade, transition, requestSchema } from "../src/lib/domain";
-import { fixture, questions } from "../src/lib/content";
+import { fixture, questions, topicKey } from "../src/lib/content";
 import { allowRequest } from "../src/lib/rate-limit";
 describe("adaptive learning", () => {
+  it.each([
+    "Electrical safety",
+    "Differential equations",
+    "Feedback loops",
+    "Linear transformations",
+    "Transformer neural networks",
+    "Python classes",
+  ])("does not substitute an unrelated curated demo for %s", (topic) => {
+    expect(topicKey(topic)).toBeNull();
+    expect(questions(topic)).toEqual([]);
+    expect(fixture(requestSchema.parse({ topic })).explanation).toContain(
+      "no answer has been generated",
+    );
+  });
   it("distinguishes pre and post checks while preserving concepts", () => {
     for (const topic of ["transformers", "python", "quadratics"]) {
       const pre = questions(topic),
@@ -19,7 +33,8 @@ describe("adaptive learning", () => {
     expect(grade(questions("transformers"), [1, 2]).score).toBe(100);
   });
   it("rejects missing or out-of-range answers", () => {
-    const sparse = new Array<number>(2); sparse[1]=2;
+    const sparse = new Array<number>(2);
+    sparse[1] = 2;
     expect(() => grade(questions("transformers"), sparse)).toThrow();
     expect(() => grade(questions("python"), [1])).toThrow();
     expect(() => grade(questions("python"), [8, 1])).toThrow();

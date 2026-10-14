@@ -4,6 +4,20 @@ test("existing private browser records are ignored and preserved", async ({
   page,
 }) => {
   await page.goto("/settings");
+  await expect(
+    page.getByText("Export is available before clearing.", { exact: false }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("Export and hosted persistence are disabled.", {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "Hosted access is controlled by Vercel deployment protection",
+      { exact: false },
+    ),
+  ).toBeVisible();
   const profile = {
     language: "Telugu",
     level: "Beginner",

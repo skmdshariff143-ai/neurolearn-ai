@@ -18,10 +18,14 @@ export function Assessment() {
   const [retryLimit, setRetryLimit] = useState(false);
   useEffect(() => {
     queueMicrotask(() => {
-      setTopic(guestStorage.getItem("nl-topic") ?? subjects[0].name);
-      setPost(
-        new URLSearchParams(window.location.search).get("mode") === "practice",
+      const params = new URLSearchParams(window.location.search);
+      const requested = params.get("topic")?.trim();
+      setTopic(
+        requested && requested.length <= 200
+          ? requested
+          : (guestStorage.getItem("nl-topic") ?? subjects[0].name),
       );
+      setPost(params.get("mode") === "practice");
     });
   }, []);
   const qs = questions(topic, post);

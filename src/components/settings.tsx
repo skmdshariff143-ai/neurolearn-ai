@@ -144,15 +144,17 @@ export function Settings() {
           ))}
         </div>
         <p className="fine" style={{ marginTop: 15 }}>
-          Configured does not mean live verified. No account authentication is
-          enabled.
+          {safePreview
+            ? "Live integrations are disabled in this fixture preview. Hosted access is controlled by Vercel deployment protection; learner accounts are not enabled."
+            : "Configured does not mean live verified. Learner accounts are not enabled."}
         </p>
       </div>
       <div className="card" style={{ marginTop: 20 }}>
         <h3>Guest data</h3>
         <p>
-          This browser stores your preferences, assessment results, and session
-          history. Export is available before clearing.
+          {safePreview
+            ? "Learning activity and preferences are kept in temporary memory and reset on reload. Export and hosted persistence are disabled. Existing saved browser records are not read or changed."
+            : "This browser stores your preferences, assessment results, and session history. Export is available before clearing."}
         </p>
         <div className="actions">
           <Button

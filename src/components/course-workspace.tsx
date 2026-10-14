@@ -15,6 +15,7 @@ import {
 } from "@/lib/courses";
 import { diagnosticSchema } from "@/lib/learning-schemas";
 import { lessonSchema } from "@/lib/domain";
+import { reteachingStrategy } from "@/lib/revision";
 import { libraryRequest, librarySnapshot } from "@/lib/library-client";
 
 async function api(path: string, body: unknown) {
@@ -151,8 +152,8 @@ export function CourseWorkspace() {
       topic: lesson.topic,
       language: course.language,
       level: course.level,
-      strategy: simple || lesson.cycle.retries ? "simple" : "steps",
-      message: `Goal: ${course.goal}. Activity: ${lesson.activity}. Possible gaps: ${weak.join(", ")}`,
+      strategy: reteachingStrategy(lesson.cycle.retries, simple),
+      message: `Goal: ${course.goal}. Activity: ${lesson.activity}. Prerequisites to check: ${course.prerequisites.join(", ")}. Possible gaps: ${weak.join(", ")}. Ask for the learner's reasoning before revealing the complete answer; change examples when reteaching.`,
     });
     if (course.provenance === "ai-generated" && response.demo)
       throw new Error(
