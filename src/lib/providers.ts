@@ -192,49 +192,175 @@ export function provider(): AIProvider {
 }
 const cache = new Map<string, { at: number; sources: Citation[] }>();
 const pendingResearch = new Map<string, Promise<Citation[]>>();
-async function retrieveResearch(topic: string): Promise<Citation[]> {
-  if (!process.env.TAVILY_API_KEY)
-    throw new ProviderError("Research requested but Tavily is not configured.");
-  const cached = cache.get(topic);
-  if (cached && Date.now() - cached.at < 3600000) return cached.sources;
-  const response = await boundedFetch("https://api.tavily.com/search", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.TAVILY_API_KEY}`,
-    },
-    body: JSON.stringify({
-      query: `${topic} educational explanation`,
-      max_results: 4,
-      search_depth: "basic",
-      include_answer: false,
-    }),
-  });
-  const data = z
+export function tavilyKeyConfigured(key = process.env.TAVILY_API_KEY) {
+  return Boolean(
+    key?.trim() && !/^(?:PASTE_|YOUR_|PLACEHOLDER|<)/i.test(key.trim()),
+  );
+}
+export class TavilyError extends ProviderError {
+  constructor(public diagnostics: Record<string, unknown>) {
+    super(`Educational research failed: ${diagnostics.errorCategory}.`, 502);
+  }
+}
+export function validateTavilyResponse(payload: unknown, topic: string) {
+  const parsed = z
     .object({
       results: z.array(
         z.object({
           title: z.string(),
           url: z.string(),
           content: z.string(),
-          score: z.number(),
+          score: z.number().min(0).max(1),
         }),
       ),
     })
-    .parse(await response.json());
-  const seen = new Set<string>();
-  const sources = data.results
-    .filter((s) => s.score >= 0.5)
-    .flatMap((s) => {
-      const parsed = citationSchema.safeParse({
-        title: s.title.slice(0, 200),
-        url: s.url,
-        excerpt: s.content.slice(0, 1200),
-      });
-      if (!parsed.success || seen.has(s.url)) return [];
-      seen.add(s.url);
-      return [parsed.data];
+    .safeParse(payload);
+  if (!parsed.success)
+    throw new TavilyError({
+      httpStatus: 200,
+      authentication: "accepted",
+      schemaValid: false,
+      errorCategory: "invalid-schema",
     });
+  const terms = [
+    ...new Set(topic.toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) ?? []),
+  ]
+    .filter(
+      (term) =>
+        !["the", "and", "for", "from", "with", "learn", "learning"].includes(
+          term,
+        ),
+    )
+    .map((term) => term.replace(/s$/, ""));
+  const seen = new Set<string>();
+  let citationValidCount = 0;
+  const sources = parsed.data.results.flatMap((s) => {
+    const citation = citationSchema.safeParse({
+      title: s.title.slice(0, 200),
+      url: s.url,
+      excerpt: s.content.slice(0, 1200),
+    });
+    if (!citation.success) return [];
+    citationValidCount++;
+    const words = new Set(
+      `${s.title} ${s.content}`
+        .toLowerCase()
+        .match(/[\p{L}\p{N}]{3,}/gu)
+        ?.map((word) => word.replace(/s$/, "")) ?? [],
+    );
+    const matches = terms.filter((term) => words.has(term)).length;
+    // Moderate ranking alone is insufficient: require at least two topic terms
+    // and half of the meaningful query terms. This is a heuristic, not a truth check.
+    const relevant =
+      s.score >= 0.5 ||
+      (s.score >= 0.35 &&
+        terms.length >= 2 &&
+        matches >= Math.max(2, Math.ceil(terms.length / 2)));
+    const url = new URL(s.url);
+    url.hash = "";
+    const canonical = url.href;
+    if (!relevant || seen.has(canonical)) return [];
+    seen.add(canonical);
+    return [citation.data];
+  });
+  return {
+    sources,
+    diagnostics: {
+      httpStatus: 200,
+      authentication: "accepted",
+      schemaValid: true,
+      resultCount: parsed.data.results.length,
+      scores: parsed.data.results.map((s) => s.score),
+      citationValidCount,
+      acceptedCount: sources.length,
+      rejectedByFiltering: parsed.data.results.length - sources.length,
+      errorCategory: sources.length
+        ? null
+        : parsed.data.results.length
+          ? "no-relevant-valid-sources"
+          : "empty-results",
+    },
+  };
+}
+export async function searchTavily(topic: string) {
+  if (safePreview)
+    throw new TavilyError({ errorCategory: "safe-preview-conflict" });
+  if (!tavilyKeyConfigured())
+    throw new TavilyError({ errorCategory: "missing-or-placeholder-key" });
+  let response: Response;
+  try {
+    response = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      signal: AbortSignal.timeout(15000),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.TAVILY_API_KEY}`,
+      },
+      body: JSON.stringify({
+        query: `${topic} educational explanation`,
+        max_results: 4,
+        search_depth: "basic",
+        include_answer: false,
+        auto_parameters: false,
+        include_raw_content: false,
+        safe_search: true,
+      }),
+    });
+  } catch (error) {
+    const code = (error as { cause?: { code?: string } }).cause?.code ?? "";
+    const category = ["ENOTFOUND", "EAI_AGAIN"].includes(code)
+      ? "dns"
+      : /CERT|TLS|SSL/.test(code)
+        ? "tls"
+        : error instanceof Error && error.name === "TimeoutError"
+          ? "timeout"
+          : "network";
+    throw new TavilyError({ errorCategory: category, httpStatus: null });
+  }
+  if (!response.ok)
+    throw new TavilyError({
+      httpStatus: response.status,
+      authentication:
+        response.status === 401
+          ? "invalid"
+          : response.status === 403
+            ? "permission-denied"
+            : "not-confirmed",
+      errorCategory:
+        response.status === 401
+          ? "authentication"
+          : response.status === 403
+            ? "permissions"
+            : response.status === 429
+              ? "rate-limit-or-credits"
+              : [432, 433].includes(response.status)
+                ? "usage-limit"
+                : response.status >= 500
+                  ? "service"
+                  : "http-request",
+    });
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new TavilyError({
+      httpStatus: 200,
+      authentication: "accepted",
+      schemaValid: false,
+      errorCategory: "invalid-json",
+    });
+  }
+  return validateTavilyResponse(payload, topic);
+}
+async function retrieveResearch(topic: string): Promise<Citation[]> {
+  if (safePreview)
+    throw new ProviderError("Safe preview disables educational research.");
+  if (!tavilyKeyConfigured())
+    throw new ProviderError("Research requested but Tavily is not configured.");
+  const cached = cache.get(topic);
+  if (cached && Date.now() - cached.at < 3600000) return cached.sources;
+  const { sources, diagnostics } = await searchTavily(topic);
+  if (!sources.length) throw new TavilyError(diagnostics);
   if (cache.size >= 100) cache.delete(cache.keys().next().value!);
   cache.set(topic, { at: Date.now(), sources });
   return sources;

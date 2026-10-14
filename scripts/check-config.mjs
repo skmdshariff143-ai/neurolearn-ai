@@ -102,8 +102,14 @@ if (
       issues.push("DATABASE_URL is invalid");
     }
 }
-if (process.env.LANGSMITH_TRACING === "true" && !process.env.LANGSMITH_API_KEY)
-  issues.push("LANGSMITH_API_KEY missing for enabled tracing");
+if (
+  process.env.LANGSMITH_TRACING === "true" &&
+  (!process.env.LANGSMITH_API_KEY?.trim() ||
+    /^(?:PASTE_|YOUR_|PLACEHOLDER|<)/i.test(
+      process.env.LANGSMITH_API_KEY.trim(),
+    ))
+)
+  issues.push("LANGSMITH_API_KEY missing or placeholder for enabled tracing");
 for (const name of Object.keys(process.env))
   if (
     /^NEXT_PUBLIC_.*(API_KEY|SECRET|TOKEN|DATABASE_URL|ACCESS_CODE)$/.test(name)

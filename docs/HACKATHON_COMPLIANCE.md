@@ -1,5 +1,13 @@
 # Hackathon compliance audit
 
+## Current compliance — 2026-10-14
+
+Mandatory Nebius/NVIDIA runtime remains BLOCKED: no key/model or successful live inference. Tavily retrieval is VERIFIED by an actual HTTP 200 smoke returning two topical HTTPS citations; it does not replace the required runtime or prove learning outcomes. LangSmith verification and hosted PostgreSQL isolation remain BLOCKED. Public source at d4e6fb0 was previously published; the new local repair is not pushed. No working hosted demo, completed video, pilot results or Devpost submission exists. The prior unintended Production-classified deployment was canceled/deleted.
+
+The submission is not complete or technically compliant. See BUILD_STATUS.md for current test/integration evidence and DEPLOYMENT.md for safe configuration. Earlier dated claims below are historical.
+
+### Earlier evidence (historical)
+
 2026-10-14 restricted-preview preparation: fixture mode has no real inference/research/tracing and disables uploads/private persistence. Limited access requires verified Vercel protection. Preview smoke commands refuse real-integration verification. This can demonstrate curated UI workflows only; mandatory Nebius/NVIDIA runtime remains BLOCKED. Nothing has been pushed/deployed.
 
 Final integration re-audit on 2026-10-13 confirmed ee83885's local tests/build and 18 browser tests. All four live smokes still report BLOCKED with no credentials and no external service call. See DEPLOYMENT_READINESS.md for classified evidence and exact owner actions. The enhanced hosted isolation/deletion smoke is prepared, not passed against a hosted database. Public code/demo/video and actual Nebius/NVIDIA runtime evidence remain pending; no compliance completion is claimed.

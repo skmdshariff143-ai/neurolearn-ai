@@ -19,8 +19,15 @@ it("safe preview ignores browser persistence and forces fixtures despite a live 
   expect(guestStorage.getItem("nl-topic")).toBeNull();
   expect(local.getItem).not.toHaveBeenCalled();
   expect(local.setItem).not.toHaveBeenCalled();
-  const { provider } = await import("../src/lib/providers");
+  const { provider, research } = await import("../src/lib/providers");
   expect(provider().kind).toBe("fixture");
+  vi.stubEnv("TAVILY_API_KEY", "test-only");
+  const fetch = vi.fn();
+  vi.stubGlobal("fetch", fetch);
+  await expect(research("Transformers")).rejects.toThrow(
+    "Safe preview disables",
+  );
+  expect(fetch).not.toHaveBeenCalled();
   const { tracingEnabled } = await import("../src/lib/telemetry");
   expect(tracingEnabled).toBe(false);
   const { extractPDF } = await import("../src/lib/resources");

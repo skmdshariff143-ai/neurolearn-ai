@@ -5,6 +5,9 @@ import {
   research,
   teachingPrompt,
   generateLesson,
+  tavilyKeyConfigured,
+  searchTavily,
+  validateTavilyResponse,
 } from "../src/lib/providers";
 import { requestSchema } from "../src/lib/domain";
 afterEach(() => {
@@ -12,6 +15,96 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 describe("provider safety", () => {
+  it("accepts moderately ranked topical citations while rejecting unrelated, weak and unsafe results", () => {
+    const source = {
+      title: "Transformer electromagnetic induction",
+      url: "https://example.org/transformers",
+      content: "Alternating current changes flux in transformers.",
+      score: 0.4797236,
+    };
+    const result = validateTavilyResponse(
+      {
+        results: [
+          source,
+          { ...source, url: `${source.url}#section` },
+          {
+            ...source,
+            url: "https://example.org/unrelated",
+            title: "Other topic",
+            content: "Unrelated text",
+          },
+          { ...source, url: "https://example.org/weak", score: 0.13710469 },
+          { ...source, url: "javascript:alert(1)" },
+        ],
+      },
+      "electromagnetic induction transformer alternating current",
+    );
+    expect(result.sources).toHaveLength(1);
+    expect(result.diagnostics).toMatchObject({
+      httpStatus: 200,
+      schemaValid: true,
+      citationValidCount: 4,
+      acceptedCount: 1,
+      rejectedByFiltering: 4,
+    });
+  });
+  it("distinguishes invalid schemas and empty valid searches", () => {
+    expect(() =>
+      validateTavilyResponse({ results: [{ score: "bad" }] }, "topic"),
+    ).toThrow("invalid-schema");
+    expect(
+      validateTavilyResponse({ results: [] }, "topic").diagnostics
+        .errorCategory,
+    ).toBe("empty-results");
+  });
+  it.each([
+    [401, "authentication"],
+    [403, "permissions"],
+    [429, "rate-limit-or-credits"],
+    [432, "usage-limit"],
+    [503, "service"],
+  ])(
+    "sanitizes Tavily HTTP %s without automatic retries",
+    async (status, category) => {
+      vi.stubEnv("TAVILY_API_KEY", "test");
+      const fetch = vi
+        .fn()
+        .mockResolvedValue(
+          new Response("PRIVATE RESPONSE MUST NOT APPEAR", {
+            status: Number(status),
+          }),
+        );
+      vi.stubGlobal("fetch", fetch);
+      await expect(searchTavily("topic")).rejects.toMatchObject({
+        diagnostics: { httpStatus: status, errorCategory: category },
+      });
+      expect(fetch).toHaveBeenCalledTimes(1);
+    },
+  );
+  it("distinguishes sanitized DNS errors", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test");
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockRejectedValue(
+          new TypeError("private details", { cause: { code: "ENOTFOUND" } }),
+        ),
+    );
+    await expect(searchTavily("topic")).rejects.toMatchObject({
+      diagnostics: { errorCategory: "dns", httpStatus: null },
+    });
+  });
+  it("rejects placeholder research credentials without a request", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "PASTE_YOUR_TAVILY_API_KEY_HERE");
+    const fetch = vi.fn();
+    vi.stubGlobal("fetch", fetch);
+    expect(tavilyKeyConfigured()).toBe(false);
+    await expect(research("placeholder-safety")).rejects.toThrow(
+      "not configured",
+    );
+    expect(fetch).not.toHaveBeenCalled();
+  });
   it("rejects invented document page identifiers and preserves supplied citations", async () => {
     vi.stubEnv("AI_PROVIDER", "local");
     vi.stubEnv("LOCAL_AI_MODEL", "test-model");

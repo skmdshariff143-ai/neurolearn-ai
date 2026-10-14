@@ -1,5 +1,13 @@
 # Final integration and deployment readiness — 2026-10-13
 
+## Current readiness — 2026-10-14
+
+Tavily retrieval is VERIFIED: repaired score-only filtering, then live smoke returned HTTP 200, four schema-valid/HTTPS results and two topical citations. LangSmith has a non-placeholder key but is BLOCKED for verification (not called in this task). Nebius key/model and hosted DATABASE_URL are absent; those integrations remain BLOCKED. Research-to-lesson generation is unverified without working inference. No safe hosted preview exists; the prior unintended Production-classified attempt was canceled/deleted. No remote publication occurred in this repair.
+
+Local typecheck, lint, 66 tests, restricted-preview configuration and production build passed. Browser/static-secret results and the exact root cause are recorded in BUILD_STATUS.md. Restricted preview retains all live-call restrictions. See DEPLOYMENT.md for the repaired search policy and operational limits. Earlier dated credential/publication statements below are historical.
+
+### Earlier evidence (historical)
+
 2026-10-14 limited-preview update: follow PREVIEW_DEPLOYMENT_CHECKLIST.md for the current requested deployment. A dedicated build-time safe-preview policy disables live calls, uploads and persistent learner records, uses temporary memory and visibly labels every page. Existing records remain untouched. Limited access must additionally be verified with Vercel deployment protection; no hosted verification/publication has occurred. Historical open-fixture configuration below is not the configuration for this restricted preview.
 
 Audit baseline: ee83885, clean working tree. This report distinguishes local evidence from live verification. No account, purchase, database, public push or deployment was initiated.

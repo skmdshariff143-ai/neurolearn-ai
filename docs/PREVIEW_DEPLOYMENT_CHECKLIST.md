@@ -75,3 +75,13 @@ Expected origin is https://github.com/skmdshariff143-ai/neurolearn-ai.git. Revie
 Local evidence: 56 unit/integration tests, 18 preserved-mode browser tests and 8 restricted-preview browser tests passed; typecheck/lint, both production builds, preview preflight, per-route axe/keyboard/overflow checks and limited secret scan passed. Production dependency audit returned zero advisories. These are localhost/embedded checks only.
 
 Locally prepared for a restricted fixture demonstration after all recorded checks pass. **Not yet verified safe on Vercel:** no hosted build/URL/access-protection test exists. Owner approvals, free-account/project setup, protected Preview deployment and anonymous-versus-authorized URL verification remain blockers. Hosted isolation remains unverified, so uploads/private persistence must stay disabled. Mandatory Nebius/NVIDIA hackathon runtime remains BLOCKED; fixtures are not live AI.
+
+## Protected deployment attempt — 2026-10-14
+
+Approved source remains d4e6fb0255952e2be48481ac6bb046036e8a1755. CLI authentication succeeded in the intended Hobby workspace. Created neurolearn-ai link-only, verified Preview authentication and all six restricted fixture variables. Forbidden integration credentials are absent. GitHub is connected; automatic Git deployments are disabled.
+
+Deployment: BLOCKED. The API unexpectedly classified the Git-SHA request with omitted target as Production. Immediately canceled it (confirmed CANCELED, aliasAssigned false, zero READY deployments), then deleted it. No safe hosted Preview URL exists. Anonymous/authorized access and hosted application checks are NOT TESTED. No protection was weakened, purchase made or source push performed.
+
+Local verification: approved source 56 unit/integration tests and 8 restricted-preview browser/accessibility tests passed; typecheck, lint, preview configuration, secret scan and preview-variable production build passed. Subsequent local LangSmith placeholder safeguards passed 57 tests, typecheck, lint and secret scan. They remain uncommitted and were excluded from the remote Git deployment request. LangSmith smoke: BLOCKED placeholder, no external request. Local .env.local is ignored; Vercel Preview tracing remains false without a key.
+
+Next: resolve Preview-only target selection before retrying and then verify hosted authentication and all learning flows. Rotate the LangSmith key exposed in chat and insert its replacement privately into the local ignored environment file. Do not promote to Production or create bypass links.

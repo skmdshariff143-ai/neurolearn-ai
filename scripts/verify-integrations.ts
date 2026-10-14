@@ -3,7 +3,12 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { resolve } from "node:path";
 import { safePreview } from "../src/lib/preview";
 import { traceable } from "langsmith/traceable";
-import { provider, research } from "../src/lib/providers";
+import {
+  provider,
+  searchTavily,
+  tavilyKeyConfigured,
+  TavilyError,
+} from "../src/lib/providers";
 import { requestSchema } from "../src/lib/domain";
 import { outlineToCourse } from "../src/lib/courses";
 import {
@@ -11,7 +16,11 @@ import {
   saveResource,
   loadLibrary,
 } from "../src/lib/learning-store";
-import { telemetryClient, tracingEnabled } from "../src/lib/telemetry";
+import {
+  telemetryClient,
+  tracingEnabled,
+  langSmithKeyConfigured,
+} from "../src/lib/telemetry";
 import {
   loadGuest,
   saveGuestAssessment,
@@ -43,12 +52,18 @@ async function main() {
   };
   let exitCode = 2;
   try {
-    const missing = required[service].filter((n) => !process.env[n]);
+    const missing = required[service].filter((n) =>
+      n === "LANGSMITH_API_KEY"
+        ? !langSmithKeyConfigured()
+        : n === "TAVILY_API_KEY"
+          ? !tavilyKeyConfigured()
+          : !process.env[n],
+    );
     if (safePreview)
       evidence.reason =
         "Safe preview disables live integration verification. No external request made.";
     else if (missing.length)
-      evidence.reason = `Missing configuration: ${missing.join(", ")}. No external request made.`;
+      evidence.reason = `Missing or placeholder configuration: ${missing.join(", ")}. No external request made.`;
     else if (!process.argv.includes("--confirm-live"))
       evidence.reason =
         "Add --confirm-live to authorize the bounded external verification. No external request made.";
@@ -92,12 +107,12 @@ async function main() {
         });
       } else if (service === "tavily") {
         const start = Date.now();
-        const sources = await research(
+        const { sources, diagnostics } = await searchTavily(
           "electromagnetic induction transformer alternating current",
         );
-        if (!sources.length)
-          throw new Error("No relevant HTTPS educational sources");
+        if (!sources.length) throw new TavilyError(diagnostics);
         Object.assign(evidence, {
+          diagnostics,
           latencyMs: Date.now() - start,
           sourceCount: sources.length,
           sources: sources.map((s) => ({ title: s.title, url: s.url })),
@@ -272,8 +287,10 @@ async function main() {
       evidence.status = "passed";
       exitCode = 0;
     }
-  } catch {
+  } catch (error) {
     evidence.status = "failed";
+    if (service === "tavily" && error instanceof TavilyError)
+      evidence.diagnostics = error.diagnostics;
     evidence.reason =
       "Live verification failed. Check private configuration, role grants, provider access, and service logs. Sensitive exception details are deliberately not printed.";
     exitCode = 1;
@@ -288,6 +305,7 @@ async function main() {
     `${String(evidence.status).toUpperCase()}: ${service}. Evidence: ${path}`,
   );
   if (evidence.reason) console.log(evidence.reason);
+  if (evidence.diagnostics) console.log(JSON.stringify(evidence.diagnostics));
   process.exit(exitCode);
 }
 void main().catch(() => {
