@@ -1,5 +1,13 @@
 # Supabase Free PostgreSQL setup
 
+## Read-only assessment update — 2026-10-14
+
+Target metadata VERIFIED against the private configuration: project zwylxrtytktpynmwlzmg, direct host db.zwylxrtytktpynmwlzmg.supabase.co, port 5432, requested database postgres. The ignored administrator file exists, but its password is still a placeholder and no shell override exists. Authentication is BLOCKED; no database request was attempted. Live server version, connected role/database, TLS handshake, extensions, schema conflicts, migration state and grants are NOT TESTED. Prior IPv6 TCP reachability is not authenticated/TLS verification.
+
+Installed pg-connection-string parsing of sslmode=verify-full enables TLS without disabling certificate or hostname checks; NODE_TLS_REJECT_UNAUTHORIZED is not disabled. This is local configuration/driver evidence only. Vercel Preview settings were independently read back: all six required fixture values match, none are branch-scoped, and no database/provider credential entries exist. No remote settings were modified; no hosted app/authentication access test is claimed.
+
+Enter the actual percent-encoded database password privately in .env.database-admin.local; do not paste it in chat. DATABASE_ADMIN_URL is for tooling only, and DATABASE_URL must later use the restricted runtime login. Hosted write/delete smoke is intentionally not run under the current read-only authorization.
+
 ## Activation assessment — 2026-10-14
 
 Owner supplied Supabase project reference zwylxrtytktpynmwlzmg. Its API endpoint is identified; the exact selected database pooler host is still missing and no Supabase connector is callable. Private DATABASE_URL and DATABASE_ADMIN_URL are absent. The read-only preflight stopped before any external request; database version, TLS, pooling, role privileges and whether migrations 002/003 already exist are NOT VERIFIED. No migration, role/password setup or synthetic hosted write occurred. Exact target approval is pending and will be requested only after reference/host and catalog assessment are available.
@@ -79,3 +87,20 @@ Restricted fixture Preview must retain browser persistence, memory quotas, no DA
 Hosted creation, migrations, TLS/connection, isolation and cleanup are **BLOCKED**: no DATABASE_URL or approved target exists. Missing-configuration smoke made no external request. Compatibility is an assessment supported by documentation/code, not a passed hosted test. Embedded regression results are recorded in BUILD_STATUS.md.
 
 Local prerequisite: psql was not found on PATH during this audit. The SQL editor can apply approved migrations; the hidden-prompt password workflow requires a free PostgreSQL client installation or an equivalent secure administrator tool. No client was installed automatically.
+
+## Provisional migration execution and recovery plan
+
+Exact target: zwylxrtytktpynmwlzmg / db.zwylxrtytktpynmwlzmg.supabase.co:5432 / requested postgres. Connected identity/database and existing objects must first be checked with authenticated read-only catalog queries; migration absence is not established. No migration ledger is currently used, so compare tables, constraints, indexes, policies, function and role grants with the saved migration files rather than inferring application from a schema name alone.
+
+| Order | File | Expected objects on a fresh target |
+| --- | --- | --- |
+| 1 | db/migrations/002_guest_postgres.sql | neurolearn schema; NOLOGIN neurolearn_app; guests, activities, request_buckets; consume_budget(text,integer); forced learner RLS, policies and grants |
+| 2 | db/migrations/003_learning_entities.sql | courses, modules, lessons, learning_sessions, assessments, attempts, concept_mastery, resources, revisions; owner composite foreign keys, checks, indexes, forced RLS and grants |
+
+Both migrations run as the confirmed migration administrator, never the restricted runtime login. SQL requires schema/table/function/policy and role-creation privileges; gen_random_uuid is built into PostgreSQL 13+, with no extra extension required for the intended modern Supabase server. This remains conditional until version/function availability is read back.
+
+Each file contains BEGIN/COMMIT and must be executed once, stopping on the first error. If 002 fails before commit, roll back its transaction and verify the catalog before retrying. If 002 commits but 003 fails, roll back 003 and preserve 002; compare the complete catalog before considering only 003 for a separately reviewed retry. If unexpected pre-existing/partial objects appear, stop. Do not automatically DROP objects, rerun 002, or use CASCADE. Any destructive rollback requires separate approval and a reviewed backup.
+
+After approved execution, read back all 12 tables, constraints/indexes, 11 learner RLS policies, function grants and ownership. Verify the runtime inherits only neurolearn_app, cannot create roles/databases or bypass RLS, and owns no learner tables. request_buckets is deliberately inaccessible directly; consume_budget is SECURITY DEFINER with a fixed search_path. Its administrator ownership is intentional and must be reviewed. Guest token hashes and transaction-local RLS isolate HTTP guests; the trusted backend database login can set identity, so it must never reach browser clients.
+
+The already-listed restricted role SQL is proposed only: create neurolearn_runtime with LOGIN/INHERIT but no superuser/CREATEDB/CREATEROLE/replication/BYPASSRLS, grant neurolearn_app membership and CONNECT, then privately set its password. No original migration file changes are proposed. Before execution, request explicit approval for these exact two files and runtime role/grants on this target, only after read-only preflight establishes their necessity. Current authorization permits no remote DDL/DML or permission changes.

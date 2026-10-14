@@ -1,5 +1,13 @@
 # Verified build status — 2026-10-13
 
+## Read-only assessment update — 2026-10-14
+
+Target metadata VERIFIED against the private configuration: project zwylxrtytktpynmwlzmg, direct host db.zwylxrtytktpynmwlzmg.supabase.co, port 5432, requested database postgres. The ignored administrator file exists, but its password is still a placeholder and no shell override exists. Authentication is BLOCKED; no database request was attempted. Live server version, connected role/database, TLS handshake, extensions, schema conflicts, migration state and grants are NOT TESTED. Prior IPv6 TCP reachability is not authenticated/TLS verification.
+
+Installed pg-connection-string parsing of sslmode=verify-full enables TLS without disabling certificate or hostname checks; NODE_TLS_REJECT_UNAUTHORIZED is not disabled. This is local configuration/driver evidence only. Vercel Preview settings were independently read back: all six required fixture values match, none are branch-scoped, and no database/provider credential entries exist. No remote settings were modified; no hosted app/authentication access test is claimed.
+
+Enter the actual percent-encoded database password privately in .env.database-admin.local; do not paste it in chat. DATABASE_ADMIN_URL is for tooling only, and DATABASE_URL must later use the restricted runtime login. Hosted write/delete smoke is intentionally not run under the current read-only authorization.
+
 ## Activation assessment — 2026-10-14
 
 Owner supplied Supabase project reference zwylxrtytktpynmwlzmg. Its API endpoint is identified; the exact selected database pooler host is still missing and no Supabase connector is callable. Private DATABASE_URL and DATABASE_ADMIN_URL are absent. The read-only preflight stopped before any external request; database version, TLS, pooling, role privileges and whether migrations 002/003 already exist are NOT VERIFIED. No migration, role/password setup or synthetic hosted write occurred. Exact target approval is pending and will be requested only after reference/host and catalog assessment are available.
@@ -172,3 +180,5 @@ PostgreSQL-task local checks so far: typecheck/lint passed; 74 tests passed in 1
 Final PostgreSQL-task validation: full preserved-mode browser suite 18/18 passed in 1.8 minutes, in addition to restricted-preview 8/8 in 1.3 minutes. Both production builds passed. Typecheck/lint and 74/74 tests passed. Limited secret scan examined 120 source paths with no candidates; 104 browser assets and tracked files contained no configured credential values. git diff --check passed. Original migrations unchanged; no remote migrations/creation, live persistence test, push or deployment performed. DATABASE_URL remains unset.
 
 Activation-assessment local regression: typecheck/lint passed; 74/74 tests passed in 15 files; normal fixture browser suite 18/18 passed in 2.1 minutes; safe-preview browser/accessibility suite 8/8 passed in 1.4 minutes. Both production builds and preview configuration passed. Limited secret scan examined 120 files with no candidates; whitespace check passed. These are local/embedded results. Exact pooler host and ignored administrator credential file remain missing. No hosted catalog/role/TLS assessment, migration, persistence/isolation/deletion smoke, push or deployment occurred. Original migration and application code are unchanged.
+
+Read-only assessment validation: npm run typecheck and lint passed; npm test passed 74/74 in 15 files, including database migration/repository, TLS/role and preview safety tests. Safe-preview configuration and production build passed. Limited secret scan: 120 paths, no candidates. No application/migration code changed. Hosted write/delete tests were prohibited and not run. Authentication/version/TLS handshake/catalog/grants remain BLOCKED/NOT TESTED on the placeholder password.
