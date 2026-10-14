@@ -1,6 +1,35 @@
 const production = process.argv.includes("--production");
 const provider = process.env.AI_PROVIDER ?? "fixture";
 const issues = [];
+const safePreview = process.env.NEXT_PUBLIC_SAFE_PREVIEW === "true";
+if (
+  !["true", "false"].includes(process.env.NEXT_PUBLIC_SAFE_PREVIEW ?? "false")
+)
+  issues.push("NEXT_PUBLIC_SAFE_PREVIEW must be true or false");
+if (safePreview) {
+  if (provider !== "fixture" || process.env.ALLOW_DEMO_MODE !== "true")
+    issues.push(
+      "Safe preview requires fixture provider and ALLOW_DEMO_MODE=true",
+    );
+  if (
+    (process.env.PERSISTENCE_PROVIDER ?? "browser") !== "browser" ||
+    (process.env.RATE_LIMIT_BACKEND ?? "memory") !== "memory"
+  )
+    issues.push(
+      "Safe preview must not enable hosted persistence or database quotas",
+    );
+  if (process.env.LANGSMITH_TRACING === "true")
+    issues.push("Tracing disabled in safe preview");
+  for (const name of [
+    "NEBIUS_API_KEY",
+    "TAVILY_API_KEY",
+    "LANGSMITH_API_KEY",
+    "DATABASE_URL",
+    "LIVE_AI_ACCESS_CODE",
+    "SESSION_SIGNING_SECRET",
+  ])
+    if (process.env[name]) issues.push(`${name} must be unset in safe preview`);
+}
 if (
   !["memory", "postgres"].includes(process.env.RATE_LIMIT_BACKEND ?? "memory")
 )

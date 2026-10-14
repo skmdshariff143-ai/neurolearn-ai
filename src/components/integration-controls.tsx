@@ -1,5 +1,8 @@
 "use client";
+import { guestStorage } from "@/lib/preview";
+
 import { useState, useEffect } from "react";
+import { safePreview } from "@/lib/preview";
 import { Button } from "./ui/button";
 import { remoteRepository, cloudEnabled } from "@/lib/remote-repository";
 import { browserRepository } from "@/lib/repository";
@@ -22,6 +25,17 @@ export function IntegrationControls() {
       setBusy(false);
     }
   }
+  if (safePreview)
+    return (
+      <section className="card">
+        <h2>Live integrations disabled</h2>
+        <p>
+          Nebius inference, Tavily research, LangSmith tracing and hosted
+          persistence are disabled. Genuine runtime verification remains
+          blocked.
+        </p>
+      </section>
+    );
   return (
     <section className="card stack" style={{ marginTop: 20 }}>
       <h2>Live demonstration access</h2>
@@ -87,7 +101,7 @@ export function IntegrationControls() {
             void run(async () => {
               await remoteRepository.load();
               await remoteRepository.saveProfile(browserRepository.profile());
-              localStorage.setItem("nl-cloud-enabled", "true");
+              guestStorage.setItem("nl-cloud-enabled", "true");
               setEnabled(true);
               setStatus(
                 "Hosted guest storage enabled for this browser. New assessments will sync.",
@@ -101,7 +115,7 @@ export function IntegrationControls() {
           disabled={busy}
           className="secondary"
           onClick={() => {
-            localStorage.removeItem("nl-cloud-enabled");
+            guestStorage.removeItem("nl-cloud-enabled");
             setEnabled(false);
             setStatus("Hosted sync paused; stored data is retained.");
           }}

@@ -1,5 +1,8 @@
 "use client";
+import { guestStorage } from "@/lib/preview";
+
 import { useEffect, useState } from "react";
+import { safePreview } from "@/lib/preview";
 import Link from "next/link";
 import { BrainCircuit } from "lucide-react";
 import { z } from "zod";
@@ -75,9 +78,9 @@ export function Classroom() {
     queueMicrotask(() => {
       const q = new URLSearchParams(window.location.search).get("topic");
       const selected =
-        q ?? localStorage.getItem("nl-topic") ?? "Electrical transformers";
+        q ?? guestStorage.getItem("nl-topic") ?? "Electrical transformers";
       setTopic(
-        q ?? localStorage.getItem("nl-topic") ?? "Electrical transformers",
+        q ?? guestStorage.getItem("nl-topic") ?? "Electrical transformers",
       );
       setProfile(browserRepository.profile());
       setDocuments(resources.load());
@@ -88,7 +91,7 @@ export function Classroom() {
         setEntries(
           z
             .array(entrySchema)
-            .parse(JSON.parse(localStorage.getItem("nl-history") ?? "[]"))
+            .parse(JSON.parse(guestStorage.getItem("nl-history") ?? "[]"))
             .filter((e) => e.topic === selected),
         );
       } catch {
@@ -115,7 +118,7 @@ export function Classroom() {
         throw new Error(
           "No relevant passage found. Try topic words present in your notes.",
         );
-      localStorage.setItem("nl-topic", topic);
+      guestStorage.setItem("nl-topic", topic);
       const response = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -148,11 +151,11 @@ export function Classroom() {
       try {
         saved = z
           .array(entrySchema)
-          .parse(JSON.parse(localStorage.getItem("nl-history") ?? "[]"));
+          .parse(JSON.parse(guestStorage.getItem("nl-history") ?? "[]"));
       } catch {
         /* Reset incompatible history schemas. */
       }
-      localStorage.setItem(
+      guestStorage.setItem(
         "nl-history",
         JSON.stringify([...saved, entry].slice(-60)),
       );
@@ -243,6 +246,7 @@ export function Classroom() {
               <input
                 type="checkbox"
                 checked={research}
+                disabled={safePreview}
                 onChange={(e) => setResearch(e.target.checked)}
               />
               Research with Tavily (requires configured credits)
@@ -251,6 +255,7 @@ export function Classroom() {
             <label htmlFor="class-document">Use your PDF notes</label>
             <select
               id="class-document"
+              disabled={safePreview}
               value={documentId}
               onChange={(e) => {
                 setDocumentId(e.target.value);
@@ -359,7 +364,7 @@ export function Classroom() {
                   className="secondary"
                   onClick={() => {
                     setClarity("Saved: clear");
-                    localStorage.setItem("nl-clarity", "clear");
+                    guestStorage.setItem("nl-clarity", "clear");
                   }}
                 >
                   This is clear
@@ -368,7 +373,7 @@ export function Classroom() {
                   className="secondary"
                   disabled={busy}
                   onClick={() => {
-                    localStorage.setItem("nl-clarity", "unclear");
+                    guestStorage.setItem("nl-clarity", "unclear");
                     void teach("simple");
                   }}
                 >

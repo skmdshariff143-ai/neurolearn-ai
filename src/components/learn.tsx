@@ -1,4 +1,6 @@
 "use client";
+import { guestStorage } from "@/lib/preview";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { subjects } from "@/lib/content";
@@ -31,7 +33,7 @@ export function Learn() {
           if (topic.trim().length < 2) return;
           try {
             browserRepository.saveProfile(p);
-            localStorage.setItem("nl-topic", topic.trim());
+            guestStorage.setItem("nl-topic", topic.trim());
             router.push(`/classroom?topic=${encodeURIComponent(topic.trim())}`);
           } catch {
             setError(

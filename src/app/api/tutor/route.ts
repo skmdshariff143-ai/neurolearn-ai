@@ -1,4 +1,5 @@
 import { NextResponse, after } from "next/server";
+import { safePreview } from "@/lib/preview";
 import { flushTraces } from "@/lib/telemetry";
 import { cookies } from "next/headers";
 import { randomUUID } from "node:crypto";
@@ -33,9 +34,15 @@ export async function POST(request: Request) {
         { error: "Invalid topic, language, or teaching strategy" },
         { status: 400 },
       );
+    if (safePreview && (parsed.data.research || parsed.data.passages?.length))
+      throw new HTTPError(
+        "Research and documents are disabled in the fixture preview",
+        503,
+      );
     if (
-      (process.env.AI_PROVIDER ?? "fixture") !== "fixture" ||
-      parsed.data.research
+      !safePreview &&
+      ((process.env.AI_PROVIDER ?? "fixture") !== "fixture" ||
+        parsed.data.research)
     )
       await authorizeExternal(jar.get(accessCookie)?.value);
     const response = NextResponse.json(await generateLesson(parsed.data), {

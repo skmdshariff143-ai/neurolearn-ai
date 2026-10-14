@@ -1,3 +1,4 @@
+import { guestStorage } from "@/lib/preview";
 import { z } from "zod";
 import { activitySchema, profileSchema, type Profile } from "./domain";
 import { browserRepository } from "./repository";
@@ -17,7 +18,7 @@ async function call(method: string, body?: unknown) {
   return data;
 }
 export const cloudEnabled = () =>
-  localStorage.getItem("nl-cloud-enabled") === "true";
+  guestStorage.getItem("nl-cloud-enabled") === "true";
 export const remoteRepository = {
   async load() {
     const data = snapshotSchema.parse(await call("GET"));
@@ -28,7 +29,7 @@ export const remoteRepository = {
       else combined[existing] = record;
     }
     combined.sort((a, b) => (Date.parse(a.at) || 0) - (Date.parse(b.at) || 0));
-    localStorage.setItem("nl-activities", JSON.stringify(combined.slice(-500)));
+    guestStorage.setItem("nl-activities", JSON.stringify(combined.slice(-500)));
     if (data.profile) browserRepository.saveProfile(data.profile);
     return data;
   },
@@ -46,6 +47,6 @@ export const remoteRepository = {
   },
   async clear() {
     await call("DELETE");
-    localStorage.removeItem("nl-cloud-enabled");
+    guestStorage.removeItem("nl-cloud-enabled");
   },
 };

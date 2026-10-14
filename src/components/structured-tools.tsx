@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { safePreview } from "@/lib/preview";
 import {
   diagnosticSchema,
   roadmapSchema,
@@ -79,6 +80,16 @@ export function StructuredTools({ task }: { task: WorkflowRequest["task"] }) {
     task === "evaluate" && result
       ? writtenEvaluationSchema.parse(result)
       : null;
+  if (safePreview)
+    return (
+      <section className="card" style={{ marginTop: 24 }}>
+        <h2>Live {task} unavailable</h2>
+        <p>
+          This fixture preview does not generate AI assessments, evaluations or
+          course outlines. Curated demonstrations remain available.
+        </p>
+      </section>
+    );
   return (
     <section className="card stack" style={{ marginTop: 24 }}>
       <h2>

@@ -1,3 +1,4 @@
+import { guestStorage } from "@/lib/preview";
 import { z } from "zod";
 import { languageSchema, lessonSchema, grade, type Question } from "./domain";
 import { diagnosticSchema, roadmapSchema } from "./learning-schemas";
@@ -228,7 +229,7 @@ export const courseRepository = {
       return z
         .array(courseSchema)
         .max(10)
-        .parse(JSON.parse(localStorage.getItem("nl-courses") ?? "[]"));
+        .parse(JSON.parse(guestStorage.getItem("nl-courses") ?? "[]"));
     } catch {
       return [];
     }
@@ -240,7 +241,7 @@ export const courseRepository = {
       throw new Error(
         "Ten course limit reached. Export and clear old courses in Settings.",
       );
-    localStorage.setItem(
+    guestStorage.setItem(
       "nl-courses",
       JSON.stringify([...all.filter((c) => c.id !== valid.id), valid]),
     );

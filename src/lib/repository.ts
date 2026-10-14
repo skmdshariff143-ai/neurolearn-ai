@@ -1,3 +1,4 @@
+import { guestStorage } from "@/lib/preview";
 import { z } from "zod";
 import {
   activitySchema,
@@ -22,7 +23,7 @@ export const defaultProfile: Profile = {
 };
 function read<T>(key: string, schema: z.ZodType<T>, fallback: T): T {
   try {
-    return schema.parse(JSON.parse(localStorage.getItem(key) ?? "null"));
+    return schema.parse(JSON.parse(guestStorage.getItem(key) ?? "null"));
   } catch {
     return fallback;
   }
@@ -30,7 +31,7 @@ function read<T>(key: string, schema: z.ZodType<T>, fallback: T): T {
 export const browserRepository: LearningRepository = {
   activities: () => read("nl-activities", z.array(activitySchema), []),
   saveActivity(a) {
-    localStorage.setItem(
+    guestStorage.setItem(
       "nl-activities",
       JSON.stringify(
         [...this.activities(), activitySchema.parse(a)].slice(-500),
@@ -39,7 +40,7 @@ export const browserRepository: LearningRepository = {
   },
   profile: () => read("nl-profile", profileSchema, defaultProfile),
   saveProfile: (p) =>
-    localStorage.setItem("nl-profile", JSON.stringify(profileSchema.parse(p))),
+    guestStorage.setItem("nl-profile", JSON.stringify(profileSchema.parse(p))),
   clear() {
     for (const key of [
       "nl-activities",
@@ -53,6 +54,6 @@ export const browserRepository: LearningRepository = {
       "nl-courses",
       "nl-resources",
     ])
-      localStorage.removeItem(key);
+      guestStorage.removeItem(key);
   },
 };

@@ -1,5 +1,7 @@
 # Product requirements and implementation scope
 
+2026-10-14 rollout policy: the limited-access fixture preview intentionally disables uploads, private persistence and live integrations until hosted isolation/runtime evidence exists. In this build, learning state is temporary and resets on reload; existing local records are untouched. Full local-development capabilities remain available with the safe-preview flag false. See PREVIEW_DEPLOYMENT_CHECKLIST.md; this is not production launch or hackathon compliance.
+
 ## Final PRD inventory and prioritized plan — 2026-10-13
 
 Audience: school learners through working professionals across India initially; English/Telugu/Hindi, guest first, ₹0 default. Broader subjects require configured inference. Sources: generated lessons, owned text PDFs, curated public references.

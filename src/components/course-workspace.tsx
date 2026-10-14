@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { safePreview } from "@/lib/preview";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { subjects, questions } from "@/lib/content";
@@ -183,7 +184,7 @@ export function CourseWorkspace() {
       <div className="actions">
         <Button
           className="secondary"
-          disabled={busy || !course}
+          disabled={busy || !course || safePreview}
           onClick={() =>
             void run(async () => {
               await libraryRequest("POST", { kind: "course", data: course });
@@ -194,7 +195,7 @@ export function CourseWorkspace() {
         </Button>
         <Button
           className="secondary"
-          disabled={busy}
+          disabled={busy || safePreview}
           onClick={() =>
             void run(async () => {
               const snapshot = await librarySnapshot();
@@ -214,8 +215,11 @@ export function CourseWorkspace() {
       </p>
       <p>
         Outlines first; lessons and two-question checks load on demand. Courses
-        are saved in this browser. Completion means passing these checks, not
-        subject mastery. Generated answer keys need educator review.
+        {safePreview
+          ? "remain only in temporary memory and reset on reload."
+          : "are saved in this browser."}{" "}
+        Completion means passing these checks, not subject mastery. Generated
+        answer keys need educator review.
       </p>
       <form
         className="stack"
@@ -227,6 +231,7 @@ export function CourseWorkspace() {
         <label htmlFor="course-mode">Course source</label>
         <select
           id="course-mode"
+          disabled={safePreview}
           value={demo ? "demo" : "live"}
           onChange={(e) => {
             setDemo(e.target.value === "demo");

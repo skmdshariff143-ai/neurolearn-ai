@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { safePreview } from "@/lib/preview";
 import { z } from "zod";
 import { isSameOrigin } from "@/lib/origin";
 import { boundedJSON, HTTPError } from "@/lib/http";
@@ -10,6 +11,11 @@ import {
 } from "@/lib/access";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
+  if (safePreview)
+    return NextResponse.json(
+      { error: "Live access disabled in fixture preview" },
+      { status: 503 },
+    );
   if (!isSameOrigin(request))
     return NextResponse.json(
       { error: "Cross-origin request rejected" },

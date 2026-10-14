@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { randomBytes, randomUUID } from "node:crypto";
 import { resolve } from "node:path";
+import { safePreview } from "../src/lib/preview";
 import { traceable } from "langsmith/traceable";
 import { provider, research } from "../src/lib/providers";
 import { requestSchema } from "../src/lib/domain";
@@ -43,7 +44,10 @@ async function main() {
   let exitCode = 2;
   try {
     const missing = required[service].filter((n) => !process.env[n]);
-    if (missing.length)
+    if (safePreview)
+      evidence.reason =
+        "Safe preview disables live integration verification. No external request made.";
+    else if (missing.length)
       evidence.reason = `Missing configuration: ${missing.join(", ")}. No external request made.`;
     else if (!process.argv.includes("--confirm-live"))
       evidence.reason =
@@ -66,6 +70,10 @@ async function main() {
           throw new Error("Configured model not present in account catalog");
         process.env.AI_PROVIDER = "nebius";
         const p = provider();
+        if (p.kind !== "nebius")
+          throw new Error(
+            "Smoke requires actual Nebius provider, never fixtures",
+          );
         const start = Date.now();
         const lesson = await p.generate(
           requestSchema.parse({

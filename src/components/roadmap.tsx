@@ -1,4 +1,6 @@
 "use client";
+import { guestStorage } from "@/lib/preview";
+
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { Button } from "./ui/button";
@@ -43,7 +45,7 @@ export function Roadmap() {
     queueMicrotask(() => {
       try {
         const p = planSchema.parse(
-          JSON.parse(localStorage.getItem("nl-roadmap") ?? "null"),
+          JSON.parse(guestStorage.getItem("nl-roadmap") ?? "null"),
         );
         setPlan(p);
         setTopic(p.topic);
@@ -55,7 +57,7 @@ export function Roadmap() {
   }, []);
   function save(p: z.infer<typeof planSchema>) {
     try {
-      localStorage.setItem("nl-roadmap", JSON.stringify(p));
+      guestStorage.setItem("nl-roadmap", JSON.stringify(p));
       setPlan(p);
     } catch {
       setError("Plan could not be saved to browser storage.");

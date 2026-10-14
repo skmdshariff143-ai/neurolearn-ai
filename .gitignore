@@ -7,6 +7,15 @@ test-results/
 playwright-report/
 coverage/
 *.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+neurolearn-progress*.json
+uploads/
+.local-data/
 .npm-cache/
 audit-report.json
 .playwright/

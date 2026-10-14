@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { safePreview } from "@/lib/preview";
 import { NextResponse } from "next/server";
 import { randomBytes } from "node:crypto";
 import { isSameOrigin } from "@/lib/origin";
@@ -20,6 +21,11 @@ async function handle(
   request: Request,
   operation: "load" | "profile" | "assessment" | "delete",
 ) {
+  if (safePreview)
+    return NextResponse.json(
+      { error: "Hosted persistence disabled in fixture preview" },
+      { status: 503 },
+    );
   if (!isSameOrigin(request))
     return NextResponse.json(
       { error: "Cross-origin request rejected" },

@@ -1,4 +1,6 @@
 "use client";
+import { guestStorage } from "@/lib/preview";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { questions, subjects } from "@/lib/content";
@@ -16,7 +18,7 @@ export function Assessment() {
   const [retryLimit, setRetryLimit] = useState(false);
   useEffect(() => {
     queueMicrotask(() => {
-      setTopic(localStorage.getItem("nl-topic") ?? subjects[0].name);
+      setTopic(guestStorage.getItem("nl-topic") ?? subjects[0].name);
       setPost(
         new URLSearchParams(window.location.search).get("mode") === "practice",
       );
@@ -59,7 +61,7 @@ export function Assessment() {
         at: new Date().toISOString(),
         iterations: earlier + 1,
       });
-      localStorage.setItem(
+      guestStorage.setItem(
         "nl-workflow",
         JSON.stringify({
           topic,
@@ -111,7 +113,7 @@ export function Assessment() {
                 setTopic(e.target.value);
                 setAnswers([]);
                 setResult(null);
-                localStorage.setItem("nl-topic", e.target.value);
+                guestStorage.setItem("nl-topic", e.target.value);
               }}
             >
               {!subjects.some((s) => s.name === topic) && (

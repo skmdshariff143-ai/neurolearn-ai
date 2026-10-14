@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { safePreview } from "@/lib/preview";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
@@ -58,7 +59,17 @@ export function Shell({ children }: { children: React.ReactNode }) {
           Start learning <ArrowUpRight size={16} />
         </Link>
       </header>
-      <main id="main">{children}</main>
+      <main id="main">
+        {safePreview && (
+          <div className="notice" role="note">
+            Limited-access fixture preview — no live AI inference. Uploads,
+            research, tracing and hosted storage are disabled. Learning activity
+            uses temporary memory and resets on reload. Do not enter personal
+            information.
+          </div>
+        )}
+        {children}
+      </main>
       <footer>
         <p>
           <strong>NeuroLearn AI</strong>

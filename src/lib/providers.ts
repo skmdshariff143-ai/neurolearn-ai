@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { safePreview } from "./preview";
 import { traceable } from "langsmith/traceable";
 import {
   citationSchema,
@@ -149,6 +150,8 @@ class CompatibleProvider implements AIProvider {
   }
 }
 export function provider(): AIProvider {
+  if (safePreview)
+    return { kind: "fixture", generate: async (r) => fixture(r) };
   const kind = process.env.AI_PROVIDER ?? "fixture";
   if (kind === "fixture") {
     if (

@@ -1,5 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
+  testMatch:
+    process.env.NEXT_PUBLIC_SAFE_PREVIEW === "true"
+      ? "**/preview.spec.ts"
+      : "**/*.spec.ts",
+  testIgnore:
+    process.env.NEXT_PUBLIC_SAFE_PREVIEW === "true"
+      ? []
+      : ["**/preview.spec.ts"],
   testDir: "./tests/e2e",
   fullyParallel: false,
   workers: 1,

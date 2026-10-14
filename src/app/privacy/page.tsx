@@ -1,4 +1,24 @@
+import { safePreview } from "@/lib/preview";
 export default function Page() {
+  if (safePreview)
+    return (
+      <article className="prose">
+        <h1 className="page-title">Limited preview privacy</h1>
+        <p>
+          All tutoring responses are curated fixtures, not live AI. Document
+          uploads, hosted records, research and tracing are disabled. Activity
+          and preferences use temporary browser memory and reset on reload.
+          Existing saved browser records are not read or deleted.
+        </p>
+        <p>
+          Do not enter personal information. Topic requests still reach the
+          application server; hosting infrastructure may retain operational
+          request logs. An anonymous request-limiting cookie may be used. No
+          provider keys or account registration are required. This preview does
+          not offer private document storage or verified hosted isolation.
+        </p>
+      </article>
+    );
   return (
     <article className="prose">
       <div className="eyebrow">Privacy information · Development preview</div>

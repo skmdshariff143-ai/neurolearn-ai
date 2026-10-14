@@ -1,5 +1,7 @@
 # Final integration and deployment readiness — 2026-10-13
 
+2026-10-14 limited-preview update: follow PREVIEW_DEPLOYMENT_CHECKLIST.md for the current requested deployment. A dedicated build-time safe-preview policy disables live calls, uploads and persistent learner records, uses temporary memory and visibly labels every page. Existing records remain untouched. Limited access must additionally be verified with Vercel deployment protection; no hosted verification/publication has occurred. Historical open-fixture configuration below is not the configuration for this restricted preview.
+
 Audit baseline: ee83885, clean working tree. This report distinguishes local evidence from live verification. No account, purchase, database, public push or deployment was initiated.
 
 ## Status

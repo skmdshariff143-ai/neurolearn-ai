@@ -1,6 +1,8 @@
 import { Client } from "langsmith";
+import { safePreview } from "./preview";
 export const telemetryClient = new Client({ autoBatchTracing: true });
 export const tracingEnabled =
+  !safePreview &&
   process.env.LANGSMITH_TRACING === "true" &&
   Boolean(process.env.LANGSMITH_API_KEY);
 export function tokenMetrics(

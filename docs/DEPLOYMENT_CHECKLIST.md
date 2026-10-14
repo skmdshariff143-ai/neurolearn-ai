@@ -1,5 +1,7 @@
 # Manual deployment checklist — 2026-10-13
 
+For the currently requested limited-access fixture preview, use PREVIEW_DEPLOYMENT_CHECKLIST.md (2026-10-14), which disables uploads and saved private data and requires verified hosted access protection. The live-service setup below remains future work, not a prerequisite for that restricted fixture preview.
+
 No public push/deployment is authorized or completed. Local checks are not hosted evidence.
 
 ## Prepared locally

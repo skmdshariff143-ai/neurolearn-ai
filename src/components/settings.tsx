@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { safePreview } from "@/lib/preview";
 import { browserRepository, defaultProfile } from "@/lib/repository";
 import type { Profile } from "@/lib/domain";
 import { Button } from "./ui/button";
@@ -30,7 +31,11 @@ export function Settings() {
           e.preventDefault();
           try {
             browserRepository.saveProfile(p);
-            setStatus("Preferences saved in this browser.");
+            setStatus(
+              safePreview
+                ? "Preferences kept temporarily; reload resets them."
+                : "Preferences saved in this browser.",
+            );
             if (cloudEnabled())
               void remoteRepository
                 .saveProfile(p)
@@ -152,6 +157,7 @@ export function Settings() {
         <div className="actions">
           <Button
             className="secondary"
+            disabled={safePreview}
             onClick={() => {
               const blob = new Blob(
                 [
@@ -183,16 +189,22 @@ export function Settings() {
             onClick={() => {
               if (
                 window.confirm(
-                  "Delete your NeuroLearn guest data from this browser?",
+                  safePreview
+                    ? "Reset temporary preview activity? Existing saved records remain untouched."
+                    : "Delete your NeuroLearn guest data from this browser?",
                 )
               ) {
                 browserRepository.clear();
                 setP(defaultProfile);
-                setStatus("Guest data cleared.");
+                setStatus(
+                  safePreview
+                    ? "Temporary activity reset; existing stored records unchanged."
+                    : "Guest data cleared.",
+                );
               }
             }}
           >
-            Clear guest data
+            {safePreview ? "Clear temporary activity" : "Clear guest data"}
           </Button>
         </div>
       </div>

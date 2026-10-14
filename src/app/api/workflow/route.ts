@@ -1,4 +1,5 @@
 import { NextResponse, after } from "next/server";
+import { safePreview } from "@/lib/preview";
 import { flushTraces } from "@/lib/telemetry";
 import { cookies } from "next/headers";
 import { randomUUID } from "node:crypto";
@@ -11,6 +12,11 @@ import { boundedJSON, HTTPError } from "@/lib/http";
 import { authorizeExternal, accessCookie } from "@/lib/access";
 export const runtime = "nodejs";
 export async function POST(request: Request) {
+  if (safePreview)
+    return NextResponse.json(
+      { error: "Live learning tasks disabled in fixture preview" },
+      { status: 503 },
+    );
   after(flushTraces);
   if (!isSameOrigin(request))
     return NextResponse.json(

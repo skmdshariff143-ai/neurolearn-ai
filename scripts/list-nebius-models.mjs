@@ -1,3 +1,9 @@
+if (process.env.NEXT_PUBLIC_SAFE_PREVIEW === "true") {
+  console.error(
+    "BLOCKED: model catalog disabled in safe preview; no request made.",
+  );
+  process.exit(2);
+}
 if (!process.env.NEBIUS_API_KEY) {
   console.error("BLOCKED: NEBIUS_API_KEY missing; no catalog request made.");
   process.exit(2);

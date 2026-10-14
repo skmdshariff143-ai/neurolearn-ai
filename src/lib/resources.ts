@@ -1,4 +1,6 @@
+import { guestStorage } from "@/lib/preview";
 import { z } from "zod";
+import { safePreview } from "./preview";
 export const resourceSchema = z
   .object({
     id: z.uuid(),
@@ -31,7 +33,7 @@ export const resources = {
       return z
         .array(resourceSchema)
         .max(5)
-        .parse(JSON.parse(localStorage.getItem("nl-resources") ?? "[]"));
+        .parse(JSON.parse(guestStorage.getItem("nl-resources") ?? "[]"));
     } catch {
       return [];
     }
@@ -41,10 +43,10 @@ export const resources = {
       all = this.load();
     if (all.length >= 5)
       throw new Error("Five document limit reached. Delete a document first.");
-    localStorage.setItem("nl-resources", JSON.stringify([...all, r]));
+    guestStorage.setItem("nl-resources", JSON.stringify([...all, r]));
   },
   remove(id: string) {
-    localStorage.setItem(
+    guestStorage.setItem(
       "nl-resources",
       JSON.stringify(this.load().filter((r) => r.id !== id)),
     );
@@ -73,6 +75,8 @@ export function retrieve(resource: Resource, query: string) {
     .slice(0, 3);
 }
 export async function extractPDF(file: File): Promise<Resource> {
+  if (safePreview)
+    throw new Error("Document uploads disabled in fixture preview");
   if (
     file.size > 2 * 1024 * 1024 ||
     file.size === 0 ||

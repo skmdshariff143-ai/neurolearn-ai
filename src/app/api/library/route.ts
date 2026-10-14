@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { safePreview } from "@/lib/preview";
 import { cookies } from "next/headers";
 import { randomBytes } from "node:crypto";
 import { isSameOrigin } from "@/lib/origin";
@@ -14,6 +15,11 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 async function handle(request: Request) {
+  if (safePreview)
+    return NextResponse.json(
+      { error: "Uploads and hosted storage disabled in fixture preview" },
+      { status: 503 },
+    );
   try {
     if (!isSameOrigin(request))
       throw new HTTPError("Cross-origin request rejected", 403);

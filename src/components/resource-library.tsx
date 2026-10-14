@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { safePreview } from "@/lib/preview";
 import {
   extractPDF,
   resources,
@@ -16,6 +17,16 @@ export function ResourceLibrary() {
   useEffect(() => {
     queueMicrotask(() => setAll(resources.load()));
   }, []);
+  if (safePreview)
+    return (
+      <section className="card" style={{ marginTop: 24 }}>
+        <h2>Document uploads disabled</h2>
+        <p>
+          Uploads and private document storage are unavailable in this fixture
+          preview. Hosted access isolation has not been verified.
+        </p>
+      </section>
+    );
   return (
     <section
       className="card stack"
