@@ -2,7 +2,7 @@
 
 ## Current compliance — 2026-10-14
 
-Mandatory Nebius/NVIDIA runtime remains BLOCKED: no key/model or successful live inference. Tavily retrieval is VERIFIED by an actual HTTP 200 smoke returning two topical HTTPS citations; it does not replace the required runtime or prove learning outcomes. LangSmith verification and hosted PostgreSQL isolation remain BLOCKED. Public source at d4e6fb0 was previously published; the new local repair is not pushed. No working hosted demo, completed video, pilot results or Devpost submission exists. The prior unintended Production-classified deployment was canceled/deleted.
+Mandatory Nebius/NVIDIA runtime remains BLOCKED: no key/model or successful live inference. Tavily retrieval is VERIFIED by an actual HTTP 200 smoke returning two topical HTTPS citations; it does not replace the required runtime or prove learning outcomes. LangSmith trace write/read, redaction and synthetic feedback are VERIFIED on 2026-10-14; hosted PostgreSQL isolation remains BLOCKED. These tracing checks do not prove live-model quality or learner outcomes. Public source at d4e6fb0 was previously published; the new local repair is not pushed. No working hosted demo, completed video, pilot results or Devpost submission exists. The prior unintended Production-classified deployment was canceled/deleted.
 
 The submission is not complete or technically compliant. See BUILD_STATUS.md for current test/integration evidence and DEPLOYMENT.md for safe configuration. Earlier dated claims below are historical.
 

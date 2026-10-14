@@ -1,5 +1,16 @@
 # Verified build status — 2026-10-13
 
+## LangSmith live verification — 2026-10-14
+
+LangSmith is VERIFIED for real trace write/read and synthetic feedback. The existing npm run smoke:langsmith -- --confirm-live passed with the privately configured key, local tracing enabled and safe preview false. npm run smoke is not defined; no script alias was added. Trace ID: 01a1383b-cd24-7000-8000-01234236b3bc. Remote inputs/outputs have redacted=true and exclude the synthetic private sentinel. Feedback with synthetic_smoke_contract score=1 was written and read back. A subsequent bounded readRun/readProject check confirmed the trace belongs to configured project neurolearn-ai and current workspace access is accepted. No custom endpoint/workspace ID was necessary. API calls succeeded; exact HTTP status codes were not captured by the existing SDK smoke. Evidence is ignored under .integration-evidence/langsmith.json and langsmith-project.json.
+
+The telemetry client now uses a 10-second request timeout and maxRetries=0 for trace ingestion. Inspection of the installed SDK shows that ordinary API reads hardcode up to four retries despite callerOptions; this SDK limitation is recorded rather than claiming all retries are disabled. The smoke retains up to three bounded visibility reads and now explicitly checks project association. SDK readRun currently works but reports deprecation after January 31, 2027; future SDK migration remains maintenance work.
+
+The existing tracing boundaries cover adaptive-lesson, provider-inference, structured-learning-task and educational-research. A synthetic-transport regression executes actual tutor, diagnostic, written misconception evaluation and simpler reteaching services, inspects eight trace starts/updates, verifies private sentinel omission and preserves aggregate rubric/misconception metrics. It makes no service/model calls. Browser-only deterministic scoring/state transitions are not sent as private learner events. Full live-model workflow tracing remains unverified because Nebius/local inference availability has not been verified. Synthetic trace feedback is not educational efficacy.
+
+Restricted Preview still requires LANGSMITH_TRACING=false and no key; safePreview blocks tracing even if accidentally configured. No Tavily requests, remote settings changes, pushes, deployments or purchases occurred in this task. Tavily retrieval remains VERIFIED; Nebius/NVIDIA and hosted PostgreSQL remain BLOCKED. Current test/build results are recorded below.
+
+
 ## Current integration repair status — 2026-10-14
 
 This section supersedes earlier dated credential/integration claims below.
@@ -139,3 +150,5 @@ Manual setup: rotate the key exposed in chat, enter the replacement privately in
 Final Tavily-task browser verification: npm run test:e2e with restricted preview variables passed 8/8 tests in 1.2 minutes, including desktop/mobile route disclosures, keyboard/axe checks and rejected live research/upload/storage APIs.
 
 Final repair regression: 8/8 restricted-preview Playwright tests passed in 1.3 minutes on desktop/mobile, including keyboard/axe scans across all routes and rejection of live research, document and persistence APIs. Production browser-asset value scan examined 104 files and found zero configured credential matches. Limited source secret scan examined 117 paths with zero candidates; git diff --check passed. These are localhost checks, not hosted Vercel verification.
+
+Final LangSmith-task regression: typecheck and lint passed; 67/67 tests passed in 14 files; restricted-preview configuration and production build passed; 8/8 desktop/mobile browser and accessibility checks passed in 1.6 minutes. Limited secret scan: 118 files, no candidates. Browser credential-value scan: 104 files, zero matches. No live Tavily/inference/database request was made in this task.

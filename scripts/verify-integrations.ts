@@ -160,6 +160,11 @@ async function main() {
         )
           throw new Error("Trace redaction check failed");
         if (!run.session_id) throw new Error("Trace project not readable");
+        const project = await telemetryClient.readProject({
+          projectId: run.session_id,
+        });
+        if (project.name !== (process.env.LANGSMITH_PROJECT ?? "default"))
+          throw new Error("Trace belongs to an unexpected project");
         const feedback = await telemetryClient.createFeedback({
           runId,
           sessionId: run.session_id,
@@ -175,6 +180,7 @@ async function main() {
           traceVisible: true,
           inputsAndOutputsRedacted: true,
           syntheticFeedbackVisible: true,
+          projectMatched: true,
         });
       } else {
         const a = randomBytes(32).toString("hex"),

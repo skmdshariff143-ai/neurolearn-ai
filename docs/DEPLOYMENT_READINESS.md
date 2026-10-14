@@ -2,7 +2,7 @@
 
 ## Current readiness — 2026-10-14
 
-Tavily retrieval is VERIFIED: repaired score-only filtering, then live smoke returned HTTP 200, four schema-valid/HTTPS results and two topical citations. LangSmith has a non-placeholder key but is BLOCKED for verification (not called in this task). Nebius key/model and hosted DATABASE_URL are absent; those integrations remain BLOCKED. Research-to-lesson generation is unverified without working inference. No safe hosted preview exists; the prior unintended Production-classified attempt was canceled/deleted. No remote publication occurred in this repair.
+Tavily retrieval is VERIFIED: repaired score-only filtering, then live smoke returned HTTP 200, four schema-valid/HTTPS results and two topical citations. LangSmith trace write/read, redaction, synthetic feedback and project association are VERIFIED on 2026-10-14; real inference-workflow tracing remains unverified. Nebius key/model and hosted DATABASE_URL are absent; those integrations remain BLOCKED. Research-to-lesson generation is unverified without working inference. No safe hosted preview exists; the prior unintended Production-classified attempt was canceled/deleted. No remote publication occurred in this repair.
 
 Local typecheck, lint, 66 tests, restricted-preview configuration and production build passed. Browser/static-secret results and the exact root cause are recorded in BUILD_STATUS.md. Restricted preview retains all live-call restrictions. See DEPLOYMENT.md for the repaired search policy and operational limits. Earlier dated credential/publication statements below are historical.
 
