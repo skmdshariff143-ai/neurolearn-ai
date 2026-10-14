@@ -91,13 +91,10 @@ if (
       if (!["postgres:", "postgresql:"].includes(url.protocol))
         issues.push("DATABASE_URL must be PostgreSQL");
       if (
-        production &&
         !["localhost", "127.0.0.1"].includes(url.hostname) &&
-        !["verify-full", "verify-ca"].includes(
-          url.searchParams.get("sslmode") ?? "",
-        )
+        url.searchParams.get("sslmode") !== "verify-full"
       )
-        issues.push("Hosted PostgreSQL must use verified TLS");
+        issues.push("Hosted PostgreSQL must use sslmode=verify-full");
     } catch {
       issues.push("DATABASE_URL is invalid");
     }

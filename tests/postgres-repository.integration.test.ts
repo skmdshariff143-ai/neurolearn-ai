@@ -21,6 +21,7 @@ import {
   saveGuestProfile,
   saveGuestAssessment,
   deleteGuest,
+  guestExists,
 } from "../src/lib/postgres";
 import {
   loadLibrary,
@@ -48,6 +49,15 @@ afterAll(async () => {
   await state.db?.close();
 });
 describe("actual application repository over embedded PostgreSQL client bridge", () => {
+  it("verifies synthetic cleanup without recreating a deleted guest", async () => {
+    const token = "e".repeat(64);
+    expect(await guestExists(token)).toBe(false);
+    await loadGuest(token);
+    expect(await guestExists(token)).toBe(true);
+    await deleteGuest(token);
+    expect(await guestExists(token)).toBe(false);
+    expect(await guestExists(token)).toBe(false);
+  });
   it("stores course entities and private notes with owner isolation and cascading deletion", async () => {
     const c = outlineToCourse(
       {

@@ -1,5 +1,12 @@
 # Final integration and deployment readiness — 2026-10-13
 
+## Hosted PostgreSQL preparation — 2026-10-14
+
+Selected candidate: Supabase Free; not provisioned. Existing standard PostgreSQL schema appears compatible; no required extension/schema rewrite. DATABASE_URL is absent and no target/migration approval exists. npm run smoke:postgres returned BLOCKED/no external request. Hosted TLS, pooler-role compatibility, isolation and cleanup remain unverified. Follow POSTGRES_SETUP.md for owner steps; preserve migration order 002 then 003.
+
+Local improvements: require hosted sslmode=verify-full in development/production, reject globally disabled certificate verification, cap per-instance pool at one, reject runtime CREATEDB/CREATEROLE, fail closed for direct databasePool calls in safe Preview, and verify final synthetic cleanup without recreating guests. Migrations are unchanged. Tavily/LangSmith status is preserved; no live integration calls or Vercel changes occurred.
+
+
 ## Current readiness — 2026-10-14
 
 Tavily retrieval is VERIFIED: repaired score-only filtering, then live smoke returned HTTP 200, four schema-valid/HTTPS results and two topical citations. LangSmith trace write/read, redaction, synthetic feedback and project association are VERIFIED on 2026-10-14; real inference-workflow tracing remains unverified. Nebius key/model and hosted DATABASE_URL are absent; those integrations remain BLOCKED. Research-to-lesson generation is unverified without working inference. No safe hosted preview exists; the prior unintended Production-classified attempt was canceled/deleted. No remote publication occurred in this repair.

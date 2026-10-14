@@ -1,5 +1,12 @@
 # Verified build status — 2026-10-13
 
+## Hosted PostgreSQL preparation — 2026-10-14
+
+Selected candidate: Supabase Free; not provisioned. Existing standard PostgreSQL schema appears compatible; no required extension/schema rewrite. DATABASE_URL is absent and no target/migration approval exists. npm run smoke:postgres returned BLOCKED/no external request. Hosted TLS, pooler-role compatibility, isolation and cleanup remain unverified. Follow POSTGRES_SETUP.md for owner steps; preserve migration order 002 then 003.
+
+Local improvements: require hosted sslmode=verify-full in development/production, reject globally disabled certificate verification, cap per-instance pool at one, reject runtime CREATEDB/CREATEROLE, fail closed for direct databasePool calls in safe Preview, and verify final synthetic cleanup without recreating guests. Migrations are unchanged. Tavily/LangSmith status is preserved; no live integration calls or Vercel changes occurred.
+
+
 ## LangSmith live verification — 2026-10-14
 
 LangSmith is VERIFIED for real trace write/read and synthetic feedback. The existing npm run smoke:langsmith -- --confirm-live passed with the privately configured key, local tracing enabled and safe preview false. npm run smoke is not defined; no script alias was added. Trace ID: 01a1383b-cd24-7000-8000-01234236b3bc. Remote inputs/outputs have redacted=true and exclude the synthetic private sentinel. Feedback with synthetic_smoke_contract score=1 was written and read back. A subsequent bounded readRun/readProject check confirmed the trace belongs to configured project neurolearn-ai and current workspace access is accepted. No custom endpoint/workspace ID was necessary. API calls succeeded; exact HTTP status codes were not captured by the existing SDK smoke. Evidence is ignored under .integration-evidence/langsmith.json and langsmith-project.json.
@@ -152,3 +159,7 @@ Final Tavily-task browser verification: npm run test:e2e with restricted preview
 Final repair regression: 8/8 restricted-preview Playwright tests passed in 1.3 minutes on desktop/mobile, including keyboard/axe scans across all routes and rejection of live research, document and persistence APIs. Production browser-asset value scan examined 104 files and found zero configured credential matches. Limited source secret scan examined 117 paths with zero candidates; git diff --check passed. These are localhost checks, not hosted Vercel verification.
 
 Final LangSmith-task regression: typecheck and lint passed; 67/67 tests passed in 14 files; restricted-preview configuration and production build passed; 8/8 desktop/mobile browser and accessibility checks passed in 1.6 minutes. Limited secret scan: 118 files, no candidates. Browser credential-value scan: 104 files, zero matches. No live Tavily/inference/database request was made in this task.
+
+PostgreSQL-task local checks so far: typecheck/lint passed; 74 tests passed in 15 files, including actual embedded migrations/repository isolation and non-creating cleanup. Restricted-preview config/build passed and 8/8 preview desktop/mobile browser/accessibility tests passed in 1.3 minutes. A separate normal fixture build passed; its full 18-test browser suite is being completed. No hosted test is counted as passed.
+
+Final PostgreSQL-task validation: full preserved-mode browser suite 18/18 passed in 1.8 minutes, in addition to restricted-preview 8/8 in 1.3 minutes. Both production builds passed. Typecheck/lint and 74/74 tests passed. Limited secret scan examined 120 source paths with no candidates; 104 browser assets and tracked files contained no configured credential values. git diff --check passed. Original migrations unchanged; no remote migrations/creation, live persistence test, push or deployment performed. DATABASE_URL remains unset.

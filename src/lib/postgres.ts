@@ -4,27 +4,35 @@ import { z } from "zod";
 import { activitySchema, profileSchema, type Profile } from "./domain";
 import { questions } from "./content";
 import { grade } from "./domain";
+import { safePreview } from "./preview";
 let pool: Pool | undefined;
+export function databasePoolOptions(connectionString: string) {
+  const url = new URL(connectionString);
+  if (!["postgres:", "postgresql:"].includes(url.protocol))
+    throw new Error("DATABASE_URL must use PostgreSQL");
+  if (
+    !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname) &&
+    (url.searchParams.get("sslmode") !== "verify-full" ||
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED === "0")
+  )
+    throw new Error(
+      "Hosted DATABASE_URL must use verified TLS with hostname verification",
+    );
+  return {
+    connectionString,
+    max: 1,
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 5000,
+    statement_timeout: 8000,
+  };
+}
 export function databasePool() {
+  if (safePreview)
+    throw new Error("Hosted persistence is disabled in safe preview");
   if (!process.env.DATABASE_URL)
     throw new Error("PostgreSQL is not configured");
   if (!pool) {
-    const url = new URL(process.env.DATABASE_URL);
-    if (
-      process.env.NODE_ENV === "production" &&
-      !["localhost", "127.0.0.1"].includes(url.hostname) &&
-      !["verify-full", "verify-ca"].includes(
-        url.searchParams.get("sslmode") ?? "",
-      )
-    )
-      throw new Error("DATABASE_URL must use verified TLS");
-    pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      max: 3,
-      idleTimeoutMillis: 10000,
-      connectionTimeoutMillis: 5000,
-      statement_timeout: 8000,
-    });
+    pool = new Pool(databasePoolOptions(process.env.DATABASE_URL));
     pool.on("error", () => {
       /* Do not log connection URLs or credentials. */
     });
@@ -35,10 +43,17 @@ export const hashToken = (token: string) =>
   createHash("sha256").update(token).digest("hex");
 export async function assertRestrictedRole(client: PoolClient) {
   const result = await client.query(
-    "select rolsuper,rolbypassrls,exists(select 1 from pg_tables where schemaname='neurolearn' and tableowner=current_user) as owns_data from pg_roles where rolname=current_user",
+    "select rolsuper,rolbypassrls,rolcreaterole,rolcreatedb,exists(select 1 from pg_tables where schemaname='neurolearn' and tableowner=current_user) as owns_data from pg_roles where rolname=current_user",
   );
   const role = result.rows[0];
-  if (!role || role.rolsuper || role.rolbypassrls || role.owns_data)
+  if (
+    !role ||
+    role.rolsuper ||
+    role.rolbypassrls ||
+    role.rolcreaterole ||
+    role.rolcreatedb ||
+    role.owns_data
+  )
     throw new Error(
       "Database runtime role must not be superuser or bypass RLS",
     );
@@ -148,6 +163,29 @@ export async function deleteGuest(token: string) {
   return guestTransaction(token, async (client, owner) => {
     await client.query("delete from neurolearn.guests where id=$1", [owner]);
   });
+}
+// Cleanup verification must not call loadGuest/loadLibrary: both create guests.
+export async function guestExists(token: string) {
+  if (!/^[0-9a-f]{64}$/.test(token)) throw new Error("Invalid guest token");
+  const client = await databasePool().connect();
+  try {
+    await assertRestrictedRole(client);
+    await client.query("begin");
+    await client.query("select set_config('neurolearn.token_hash',$1,true)", [
+      hashToken(token),
+    ]);
+    const result = await client.query(
+      "select id from neurolearn.guests where token_hash=$1",
+      [hashToken(token)],
+    );
+    await client.query("commit");
+    return result.rows.length > 0;
+  } catch (error) {
+    await client.query("rollback").catch(() => {});
+    throw error;
+  } finally {
+    client.release();
+  }
 }
 export async function consumeDatabaseBudget(key: string, cap: number) {
   const client = await databasePool().connect();

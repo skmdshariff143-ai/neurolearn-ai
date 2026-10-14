@@ -92,3 +92,7 @@ The telemetry client now uses a 10-second request timeout and maxRetries=0 for t
 The existing tracing boundaries cover adaptive-lesson, provider-inference, structured-learning-task and educational-research. A synthetic-transport regression executes actual tutor, diagnostic, written misconception evaluation and simpler reteaching services, inspects eight trace starts/updates, verifies private sentinel omission and preserves aggregate rubric/misconception metrics. It makes no service/model calls. Browser-only deterministic scoring/state transitions are not sent as private learner events. Full live-model workflow tracing remains unverified because Nebius/local inference availability has not been verified. Synthetic trace feedback is not educational efficacy.
 
 Restricted Preview still requires LANGSMITH_TRACING=false and no key; safePreview blocks tracing even if accidentally configured. No Tavily requests, remote settings changes, pushes, deployments or purchases occurred in this task. Tavily retrieval remains VERIFIED; Nebius/NVIDIA and hosted PostgreSQL remain BLOCKED. Current test/build results are recorded below.
+
+## Hosted PostgreSQL setup
+
+See [POSTGRES_SETUP.md](POSTGRES_SETUP.md) for documentation-based Supabase Free compatibility, exact restricted-role setup, migration approval boundary, pooling/TLS and synthetic-cleanup checks. No target is configured and no hosted test has passed.

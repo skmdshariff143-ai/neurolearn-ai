@@ -25,6 +25,7 @@ import {
   loadGuest,
   saveGuestAssessment,
   deleteGuest,
+  guestExists,
   databasePool,
 } from "../src/lib/postgres";
 type Service = "nebius" | "tavily" | "langsmith" | "postgres";
@@ -285,9 +286,17 @@ async function main() {
             deleteGuest(a),
             deleteGuest(b),
           ]);
-          await databasePool().end();
-          if (cleanup.some((r) => r.status === "rejected"))
-            throw new Error("Scratch guest cleanup could not be verified");
+          try {
+            if (
+              cleanup.some((r) => r.status === "rejected") ||
+              (await guestExists(a)) ||
+              (await guestExists(b))
+            )
+              throw new Error("Scratch guest cleanup could not be verified");
+            evidence.syntheticCleanupVerified = true;
+          } finally {
+            await databasePool().end();
+          }
         }
       }
       evidence.status = "passed";

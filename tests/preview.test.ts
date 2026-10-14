@@ -30,6 +30,8 @@ it("safe preview ignores browser persistence and forces fixtures despite a live 
   expect(fetch).not.toHaveBeenCalled();
   const { tracingEnabled } = await import("../src/lib/telemetry");
   expect(tracingEnabled).toBe(false);
+  const { databasePool } = await import("../src/lib/postgres");
+  expect(() => databasePool()).toThrow("disabled in safe preview");
   const { extractPDF } = await import("../src/lib/resources");
   await expect(extractPDF(new File(["%PDF-"], "test.pdf"))).rejects.toThrow(
     /disabled/,

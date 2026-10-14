@@ -1,5 +1,12 @@
 # Database schema
 
+## Hosted PostgreSQL preparation — 2026-10-14
+
+Selected candidate: Supabase Free; not provisioned. Existing standard PostgreSQL schema appears compatible; no required extension/schema rewrite. DATABASE_URL is absent and no target/migration approval exists. npm run smoke:postgres returned BLOCKED/no external request. Hosted TLS, pooler-role compatibility, isolation and cleanup remain unverified. Follow POSTGRES_SETUP.md for owner steps; preserve migration order 002 then 003.
+
+Local improvements: require hosted sslmode=verify-full in development/production, reject globally disabled certificate verification, cap per-instance pool at one, reject runtime CREATEDB/CREATEROLE, fail closed for direct databasePool calls in safe Preview, and verify final synthetic cleanup without recreating guests. Migrations are unchanged. Tavily/LangSmith status is preserved; no live integration calls or Vercel changes occurred.
+
+
 Apply 002 then 003 once as the migration administrator. Runtime must inherit neurolearn_app without superuser, ownership or RLS bypass. No hosted migration was executed.
 
 Final readiness smoke adds cross-guest overwrite checks that require SQLSTATE 42501, followed by owned-library readback and cascading deletion checks. Connection errors cannot count as permission-isolation success. Actual hosted execution remains BLOCKED by missing DATABASE_URL; embedded tests are the current evidence. See DEPLOYMENT_READINESS.md for restricted-login/TLS setup and manual verification.
