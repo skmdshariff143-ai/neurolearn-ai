@@ -5,13 +5,17 @@
 
 const BLOCKED_HOST_PATTERNS = [
   /^localhost$/i,
-  /^127(?:\.[0-9]+){3}$/,
-  /^10(?:\.[0-9]+){3}$/,
-  /^192\.168(?:\.[0-9]+){2}$/,
-  /^172\.(?:1[6-9]|2[0-9]|3[0-1])(?:\.[0-9]+){2}$/,
-  /^169\.254(?:\.[0-9]+){2}$/,
+  /^127(?:\.[0-9]+){1,3}$/,
+  /^10(?:\.[0-9]+){1,3}$/,
+  /^192\.168(?:\.[0-9]+){1,2}$/,
+  /^172\.(?:1[6-9]|2[0-9]|3[0-1])(?:\.[0-9]+){1,2}$/,
+  /^169\.254(?:\.[0-9]+){1,2}$/,
   /^0\.0\.0\.0$/,
+  /^0$/,
+  /^2130706433$/, // 127.0.0.1 in decimal integer format
+  /^0x7f/i,      // 127.0.0.1 in hex format
   /^\[?::1?\]?$/,
+  /^\[?::ffff:(?:127\.|10\.|192\.168\.|172\.(?:1[6-9]|2[0-9]|3[0-1])\.|169\.254\.)/i,
   /^\[?fe80:/i,
   /^\[?fc00:/i,
   /^\[?fd00:/i,
@@ -19,13 +23,15 @@ const BLOCKED_HOST_PATTERNS = [
   /\.local$/i,
   /\.corp$/i,
   /\.onion$/i,
+  /\.localhost$/i,
 ];
 
 const PROMPT_INJECTION_PATTERNS = [
   /ignore\s+(?:all\s+)?previous\s+instructions/gi,
   /disregard\s+(?:all\s+)?prior\s+instructions/gi,
   /system\s*:\s*(?:you\s+are|override|instructions)/gi,
-  /you\s+are\s+now\s+(?:unrestricted|dan|developer\s+mode)/gi,
+  /you\s+are\s+now\s+(?:unrestricted|dan|developer\s+mode|jailbroken)/gi,
+  /!\[[^\]]*\]\s*\(\s*https?:\/\/[^\s)]+\)/gi, // Markdown image exfiltration
   /<\s*script[^>]*>.*?<\s*\/\s*script\s*>/gis,
   /javascript\s*:/gi,
   /data\s*:\s*text\/html/gi,
