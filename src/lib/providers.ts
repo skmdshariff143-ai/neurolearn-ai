@@ -10,6 +10,9 @@ import {
 } from "./domain";
 import { fixture } from "./content";
 import { telemetryClient, tracingEnabled, tokenMetrics } from "./telemetry";
+import { cleanAndRepairJSON } from "./explanation/prompt-builder";
+import { defaultResearchCoordinator } from "./research/coordinator";
+import type { NormalizedSource } from "./research/types";
 export class ProviderError extends Error {
   constructor(
     message: string,
@@ -140,7 +143,7 @@ class CompatibleProvider implements AIProvider {
     const data = completionSchema.parse(await response.json());
     this.usage = data.usage;
     try {
-      return JSON.parse(data.choices[0].message.content) as unknown;
+      return cleanAndRepairJSON(data.choices[0].message.content) as unknown;
     } catch {
       throw new ProviderError(
         "Model output failed structured lesson validation. Please retry.",
@@ -173,6 +176,30 @@ export function provider(): AIProvider {
       "https://api.tokenfactory.nebius.com/v1",
       process.env.NEBIUS_API_KEY,
       process.env.NEBIUS_MODEL,
+    );
+  }
+  if (kind === "gemini") {
+    if (!process.env.GEMINI_API_KEY)
+      throw new ProviderError(
+        "Gemini is not configured. Set GEMINI_API_KEY.",
+      );
+    return new CompatibleProvider(
+      kind,
+      "https://generativelanguage.googleapis.com/v1beta/openai",
+      process.env.GEMINI_API_KEY,
+      process.env.GEMINI_MODEL ?? "gemini-2.5-flash",
+    );
+  }
+  if (kind === "groq") {
+    if (!process.env.GROQ_API_KEY)
+      throw new ProviderError(
+        "Groq is not configured. Set GROQ_API_KEY.",
+      );
+    return new CompatibleProvider(
+      kind,
+      "https://api.groq.com/openai/v1",
+      process.env.GROQ_API_KEY,
+      process.env.GROQ_MODEL ?? "llama-3.3-70b-versatile",
     );
   }
   if (kind === "local") {
@@ -391,13 +418,28 @@ export const generateLesson = traceable(
   async (r: TutorRequest) => {
     const p = provider();
     const started = Date.now();
-    if ((r.research || r.passages?.length) && p.kind === "fixture")
+    if (
+      (r.research || r.universalResearch || r.passages?.length) &&
+      p.kind === "fixture"
+    )
       throw new ProviderError(
         "Research-to-lesson requires a live provider; fixture lessons cannot incorporate retrieved sources.",
       );
-    const sources = r.research ? await research(r.topic) : [];
+    let sources: Citation[] = [];
+    let normalizedSources: NormalizedSource[] = [];
+    if (r.universalResearch) {
+      const res = await defaultResearchCoordinator.coordinateResearch(
+        r.topic,
+        r.level,
+        r.language,
+      );
+      sources = res.citations;
+      normalizedSources = res.sources;
+    } else if (r.research) {
+      sources = await research(r.topic);
+    }
     const lesson = await p.generate(r, sources);
-    if (r.research) {
+    if (r.research || r.universalResearch) {
       const citations = [
         ...lesson.explanation.matchAll(/\[source:([^\]]*)\]/g),
       ];
@@ -433,6 +475,8 @@ export const generateLesson = traceable(
     return {
       lesson,
       sources,
+      normalizedSources:
+        normalizedSources.length > 0 ? normalizedSources : undefined,
       provider: p.kind,
       demo: p.kind === "fixture",
       latencyMs: Date.now() - started,

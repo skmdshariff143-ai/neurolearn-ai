@@ -34,7 +34,12 @@ export async function POST(request: Request) {
         { error: "Invalid topic, language, or teaching strategy" },
         { status: 400 },
       );
-    if (safePreview && (parsed.data.research || parsed.data.passages?.length))
+    if (
+      safePreview &&
+      (parsed.data.research ||
+        parsed.data.universalResearch ||
+        parsed.data.passages?.length)
+    )
       throw new HTTPError(
         "Research and documents are disabled in the fixture preview",
         503,
@@ -42,7 +47,8 @@ export async function POST(request: Request) {
     if (
       !safePreview &&
       ((process.env.AI_PROVIDER ?? "fixture") !== "fixture" ||
-        parsed.data.research)
+        parsed.data.research ||
+        parsed.data.universalResearch)
     )
       await authorizeExternal(jar.get(accessCookie)?.value);
     const response = NextResponse.json(await generateLesson(parsed.data), {

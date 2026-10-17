@@ -46,12 +46,15 @@ Both deployments fetched the approved GitHub source directly: `d4e6fb0255952e2be
 | --- | --- | --- | --- | --- |
 | Protected bootstrap | dpl_2rwuMPRKYeqwicbwELibUnPnSSbh | Production | main | READY |
 | Protected demonstration | dpl_FiqNeXorsX9M7JkGnR1grvTjbohq | Preview (API target null) | fixture-preview | READY |
+| Protected preview release | dpl_2Hes9pKGG2hX5bt3EK4Hpa6deJd4 | Preview (API target null) | fixture-preview | READY |
 
 - Bootstrap: https://neurolearn-3pexaim8c-shaik-mahammad-shariff-s-projects.vercel.app
 - Primary protected domain: https://neurolearn-ai-pink.vercel.app
-- Preview: https://neurolearn-2nymaifwu-shaik-mahammad-shariff-s-projects.vercel.app
+- Prior Preview demonstration: https://neurolearn-2nymaifwu-shaik-mahammad-shariff-s-projects.vercel.app
+- Latest Preview release: https://neurolearn-p6rp0nceo-shaik-mahammad-shariff-s-projects.vercel.app
+- Preview branch alias: https://neurolearn-ai-git-fixt-c75bbe-shaik-mahammad-shariff-s-projects.vercel.app
 
-The only Git publication was the explicitly authorized `fixture-preview` branch reference at the already-public approved commit. Remote main remains at the same approved commit. No later application commits were pushed.
+The Git publication was the explicitly authorized `fixture-preview` branch reference at approved commit `6b03ae2b22bfa34b4d8eba37703a70f5a47b099f`. Remote main remains at the approved `d4e6fb0255952e2be48481ac6bb046036e8a1755`. No unapproved development commits were pushed.
 
 ## Safeguards verified before either build
 

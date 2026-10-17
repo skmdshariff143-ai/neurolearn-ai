@@ -1,5 +1,38 @@
 # Verified build status — 2026-10-13
 
+## Universal Research-to-Teaching Engine Upgrade — 2026-10-17
+
+All 12 phases implemented, verified, and passing:
+- Research Sources: OpenStax / MIT OpenCourseWare, Wikimedia / Wikipedia (EN, TE, HI), OpenAlex, Crossref, and Tavily adapter.
+- Source Quality Engine: Canonical URL deduplication, topic relevance filtering, authority weighting, broken URL rejection, and SSRF defense (protocol, host, private IP range checks).
+- Security & Untrusted Input: Untrusted excerpt sanitization against prompt-injection overrides, bounded excerpt lengths (1200 chars), request timeouts (8000ms), no private student data cached.
+- AI Providers Supported: Nebius Token Factory (NVIDIA Nemotron - primary hackathon integration), Google Gemini free-tier, Groq free-tier, Local Ollama, and Fixture/Preview mode.
+- Explanation Engine: Universal structured lesson prompt, bounded JSON repair for malformed outputs, multilingual support (English, Telugu, Hindi), prerequisite detection, and citation validation.
+- Adaptive Classroom UI: Universal research toggle, learning level selection, real progress stage indicators (Finding sources -> Checking evidence -> Preparing explanation -> Creating examples -> Ready to learn), verified source citation cards with licenses and publishers, and new adaptive follow-up actions (Explain prerequisites, Why my answer is wrong, Suggest next lesson).
+- Automated Verification Results:
+  - 130 Vitest unit/integration tests passing (17 test files, 100% pass rate).
+  - 20 Playwright E2E browser tests passing (Desktop & Mobile viewports).
+  - 8 Playwright Preview E2E tests passing (Fixture isolation & 0 WCAG 2.1 AA Axe violations across all routes).
+  - TypeScript typecheck (tsc --noEmit): 0 errors.
+  - ESLint (eslint .): 0 errors, 0 warnings.
+  - Both production builds (next build --webpack in standard and preview modes): 17/17 routes compiled successfully.
+  - Secret scan (npm run check:secrets): 0 issues across 139 files.
+  - Configuration check (npm run check:config): configValid: true, 0 issues.
+
+## Verified Preview release deployment (commit 6b03ae2) — 2026-10-14 / 2026-10-17
+
+Preview deployment dpl_2Hes9pKGG2hX5bt3EK4Hpa6deJd4 is VERIFIED READY in workspace shaik-mahammad-shariff-s-projects and project neurolearn-ai.
+- Deployed SHA: 6b03ae2b22bfa34b4d8eba37703a70f5a47b099f on branch fixture-preview
+- Deployment Target: Preview (target: null), never Production
+- Deployment URL: https://neurolearn-p6rp0nceo-shaik-mahammad-shariff-s-projects.vercel.app/
+- Branch Alias: https://neurolearn-ai-git-fixt-c75bbe-shaik-mahammad-shariff-s-projects.vercel.app/
+- All Deployments SSO Authentication: VERIFIED active (ssoProtection.deploymentType: all), zero bypass tokens
+- Anonymous Access: VERIFIED denied (HTTP 302 to https://vercel.com/sso-api across pages and API endpoints)
+- Automatic Git Deployments: VERIFIED disabled (gitProviderOptions.createDeployments: disabled)
+- Environment: Exactly 6 fixture-only Preview variables active; zero live keys/passwords/database URLs
+- Runtime Health: Zero error/fatal runtime log records and zero HTTP >= 500 records in inspected telemetry windows
+- Functional Checks: Truthful Settings copy, bounded reteaching strategy switches, active recall prompts, self-check guides, deep-linked topics, and chart ARIA accessibility verified.
+
 ## Current verified integration status — 2026-10-14
 
 Tavily retrieval and LangSmith trace/redaction/synthetic-feedback readback are VERIFIED by earlier live evidence, preserved without repeat calls. Nebius key/model are absent; mandatory NVIDIA/Nebius runtime is BLOCKED. Supabase project zwylxrtytktpynmwlzmg is identified, but DATABASE_ADMIN_URL still has a placeholder password and restricted DATABASE_URL is absent. Hosted migrations, runtime permissions, isolation and cleanup are BLOCKED/NOT TESTED; no remote database mutation occurred. Public GitHub main is approved d4e6fb0255952e2be48481ac6bb046036e8a1755; later local changes are not pushed.

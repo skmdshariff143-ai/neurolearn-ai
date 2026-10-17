@@ -38,6 +38,7 @@ export const requestSchema = z.object({
     .max(3)
     .optional(),
   level: z.enum(["Beginner", "Intermediate", "Advanced"]).default("Beginner"),
+  universalResearch: z.boolean().default(false).optional(),
 });
 export type TutorRequest = z.infer<typeof requestSchema>;
 export const citationSchema = z.object({

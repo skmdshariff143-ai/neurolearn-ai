@@ -18,9 +18,11 @@ import { subjects } from "@/lib/content";
 import { Button } from "./ui/button";
 import { ConceptDiagram } from "./concept-diagram";
 import { resources, retrieve, type Resource } from "@/lib/resources";
+import { normalizedSourceSchema, type NormalizedSource } from "@/lib/research/types";
 type Entry = {
   lesson: Lesson;
   sources: z.infer<typeof citationSchema>[];
+  normalizedSources?: NormalizedSource[];
   provider: string;
   demo: boolean;
   latencyMs: number;
@@ -31,6 +33,7 @@ type Entry = {
 const entrySchema = z.object({
   lesson: lessonSchema,
   sources: z.array(citationSchema),
+  normalizedSources: z.array(normalizedSourceSchema).optional(),
   provider: z.string(),
   demo: z.boolean(),
   latencyMs: z.number(),
@@ -66,6 +69,15 @@ export function Classroom() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [research, setResearch] = useState(false);
+  const [universalResearch, setUniversalResearch] = useState(false);
+  const [stage, setStage] = useState<
+    | "idle"
+    | "finding_sources"
+    | "checking_evidence"
+    | "preparing_explanation"
+    | "creating_examples"
+    | "ready"
+  >("idle");
   const [clarity, setClarity] = useState("");
   const [reteach, setReteach] = useState(false);
   const [documents, setDocuments] = useState<Resource[]>([]);
@@ -102,9 +114,12 @@ export function Classroom() {
   async function teach(
     strategy: TutorRequest["strategy"] = reteach ? "simple" : profile.style,
     language = profile.language,
+    customMessage?: string,
   ) {
+    const outgoingMessage = customMessage ?? message;
     setBusy(true);
     setError("");
+    setStage(universalResearch ? "finding_sources" : "preparing_explanation");
     try {
       const document = documents.find((d) => d.id === documentId);
       if (document && !consent)
@@ -112,13 +127,18 @@ export function Classroom() {
           "Consent is required before sending PDF passages to inference.",
         );
       const passages = document
-        ? retrieve(document, `${topic} ${message}`)
+        ? retrieve(document, `${topic} ${outgoingMessage}`)
         : [];
       if (document && !passages.length)
         throw new Error(
           "No relevant passage found. Try topic words present in your notes.",
         );
       guestStorage.setItem("nl-topic", topic);
+
+      if (universalResearch) {
+        setStage("checking_evidence");
+      }
+
       const response = await fetch("/api/tutor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -126,8 +146,9 @@ export function Classroom() {
           topic,
           language,
           strategy,
-          message,
+          message: outgoingMessage,
           research,
+          universalResearch,
           passages,
           level: profile.level,
           context: entries
@@ -139,6 +160,7 @@ export function Classroom() {
             })),
         }),
       });
+      setStage("creating_examples");
       const raw = await response.json();
       if (!response.ok) throw new Error(raw.error ?? "Lesson unavailable");
       const entry = entrySchema.parse(raw);
@@ -159,12 +181,14 @@ export function Classroom() {
         "nl-history",
         JSON.stringify([...saved, entry].slice(-60)),
       );
-      setMessage("");
+      if (!customMessage) setMessage("");
       setClarity("");
+      setStage("ready");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unable to load lesson");
     } finally {
       setBusy(false);
+      setStage("idle");
     }
   }
   const last = entries.at(-1);
@@ -241,13 +265,45 @@ export function Classroom() {
                   ))}
                 </select>
               </div>
+              <div>
+                <label htmlFor="class-level">Level</label>
+                <select
+                  id="class-level"
+                  value={profile.level}
+                  onChange={(e) =>
+                    setProfile({
+                      ...profile,
+                      level: e.target.value as Profile["level"],
+                    })
+                  }
+                >
+                  {["Beginner", "Intermediate", "Advanced"].map((lvl) => (
+                    <option key={lvl}>{lvl}</option>
+                  ))}
+                </select>
+              </div>
             </div>
+            <label className="check-label">
+              <input
+                type="checkbox"
+                checked={universalResearch}
+                disabled={safePreview}
+                onChange={(e) => {
+                  setUniversalResearch(e.target.checked);
+                  if (e.target.checked) setResearch(false);
+                }}
+              />
+              Universal open research (Wikipedia, OpenAlex, Crossref, OpenStax, Tavily)
+            </label>
             <label className="check-label">
               <input
                 type="checkbox"
                 checked={research}
                 disabled={safePreview}
-                onChange={(e) => setResearch(e.target.checked)}
+                onChange={(e) => {
+                  setResearch(e.target.checked);
+                  if (e.target.checked) setUniversalResearch(false);
+                }}
               />
               Research with Tavily (requires configured credits)
             </label>
@@ -285,7 +341,16 @@ export function Classroom() {
           </form>
           {busy && (
             <div role="status" className="skeleton">
-              Preparing your explanation…
+              {stage === "finding_sources" &&
+                "Finding sources across open educational repositories…"}
+              {stage === "checking_evidence" &&
+                "Checking evidence, authority, and topic relevance…"}
+              {stage === "preparing_explanation" &&
+                "Preparing your explanation…"}
+              {stage === "creating_examples" &&
+                "Creating examples & concept checks…"}
+              {stage === "ready" && "Ready to learn!"}
+              {stage === "idle" && "Preparing your explanation…"}
             </div>
           )}
           {error && (
@@ -343,7 +408,41 @@ export function Classroom() {
                 <strong>Pause & think</strong>
                 {last.lesson.check}
               </div>
-              {last.sources.length > 0 && (
+              {last.normalizedSources && last.normalizedSources.length > 0 ? (
+                <div>
+                  <h3 style={{ marginTop: 24 }}>Verified educational sources</h3>
+                  <p className="fine">
+                    Grounded in open educational repositories with verified publisher licenses.
+                  </p>
+                  {last.normalizedSources.map((s) => (
+                    <div
+                      key={s.sourceId}
+                      className="card"
+                      style={{ marginTop: 12, padding: 14 }}
+                    >
+                      <p style={{ fontWeight: 600, margin: "0 0 6px" }}>
+                        <a href={s.url} target="_blank" rel="noopener noreferrer">
+                          {s.title} ↗
+                        </a>
+                      </p>
+                      <p className="fine" style={{ margin: "0 0 8px" }}>
+                        <strong>Publisher:</strong> {s.publisher} ·{" "}
+                        <strong>License:</strong> {s.license}
+                      </p>
+                      <blockquote
+                        style={{
+                          margin: 0,
+                          fontSize: "0.9em",
+                          fontStyle: "italic",
+                          opacity: 0.9,
+                        }}
+                      >
+                        &ldquo;{s.excerpt}&rdquo;
+                      </blockquote>
+                    </div>
+                  ))}
+                </div>
+              ) : last.sources.length > 0 ? (
                 <div>
                   <h3 style={{ marginTop: 24 }}>Retrieved sources</h3>
                   <p className="fine">
@@ -358,7 +457,7 @@ export function Classroom() {
                     </p>
                   ))}
                 </div>
-              )}
+              ) : null}
               <div className="actions">
                 <Button
                   className="secondary"
@@ -396,6 +495,45 @@ export function Classroom() {
                   {label}
                 </Button>
               ))}
+              <Button
+                className="secondary"
+                disabled={busy}
+                onClick={() =>
+                  void teach(
+                    "simple",
+                    profile.language,
+                    "Explain the core prerequisites and foundational knowledge needed for this concept.",
+                  )
+                }
+              >
+                Explain prerequisites
+              </Button>
+              <Button
+                className="secondary"
+                disabled={busy}
+                onClick={() =>
+                  void teach(
+                    "simple",
+                    profile.language,
+                    "Please analyze my answer or thought process and explain why it is wrong.",
+                  )
+                }
+              >
+                Why my answer is wrong
+              </Button>
+              <Button
+                className="secondary"
+                disabled={busy}
+                onClick={() =>
+                  void teach(
+                    "lesson",
+                    profile.language,
+                    "What should I study next after mastering this concept? Suggest the next lesson.",
+                  )
+                }
+              >
+                Suggest next lesson
+              </Button>
               {(["Telugu", "Hindi"] as const).map((l) => (
                 <Button
                   key={l}
