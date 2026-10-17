@@ -29,8 +29,17 @@ Open http://localhost:3000. Choose Learn → Electrical transformers → classro
 ## Providers
 
 - `AI_PROVIDER=fixture`: curated demonstrations of transformers, Python loops, and quadratics. Production requires `ALLOW_DEMO_MODE=true` and retains labels.
-- `AI_PROVIDER=nebius`: set server-side `NEBIUS_API_KEY` and the exact `NEBIUS_MODEL` ID available in your Token Factory account. Use an NVIDIA Nemotron model for the intended track. No silent fallback.
+- `AI_PROVIDER=fixture`: curated demonstrations of transformers, Python loops, and quadratics. Production requires `ALLOW_DEMO_MODE=true` and retains labels.
+- `AI_PROVIDER=nebius`: set server-side `NEBIUS_API_KEY` and the exact `NEBIUS_MODEL` ID available in your Token Factory account. Use an NVIDIA Nemotron model for the intended hackathon track. No silent fallback.
+- `AI_PROVIDER=gemini`: Google Gemini free-tier developer adapter (set `GEMINI_API_KEY`).
+- `AI_PROVIDER=groq`: Groq free-tier developer adapter (set `GROQ_API_KEY`).
 - `AI_PROVIDER=local`: use a loopback OpenAI-compatible inference server, e.g. Ollama's `/v1` endpoint, with `LOCAL_AI_MODEL` set to an installed model. Hardware/model availability has not been verified.
+
+### Universal Research-to-Teaching Engine
+The platform includes an open-source, multi-source pedagogical research coordinator (`src/lib/research/`):
+- **Sources queried**: Wikipedia (English, Telugu, Hindi), OpenAlex (open-access academic literature), Crossref (scholarly metadata), OpenStax / MIT OCW (peer-reviewed textbooks), and Tavily (web search).
+- **Security & Quality**: Built-in SSRF protection (rejects private/cloud metadata IPs and loopbacks), untrusted prompt injection sanitization, canonical URL normalization, and authority/relevance weighting.
+- **Golden Educational Benchmark**: 10 canonical benchmark topics across STEM, Humanities, Languages, and Financial Literacy tested deterministically in `tests/golden-evaluation.test.ts`.
 
 Tavily retrieval is verified by a real HTTP 200 smoke (four results, two accepted sources). Research is opt-in and requires `TAVILY_API_KEY`. Tracing is opt-in using `LANGSMITH_API_KEY` and `LANGSMITH_TRACING=true`. Inputs and outputs are redacted from tracing. LangSmith trace write/read, redaction and synthetic feedback are verified. Full live-model tracing and source-grounded teaching remain unverified without authorized inference. None of these keys are needed for ordinary demo development.
 

@@ -65,6 +65,30 @@ export function classifyTopicAndSubject(topic: string): {
       prerequisites: ["Classical Mechanics", "Electromagnetism", "Calculus"],
     };
   }
+  if (/statistic|statistics|probability|distribution|mean|variance|hypothesis|regression/i.test(lower)) {
+    return {
+      subject: "Statistics",
+      prerequisites: ["Basic Algebra", "Probability Foundations", "Data Representation"],
+    };
+  }
+  if (/interest|inflation|finance|economic|financial|money|investment|market/i.test(lower)) {
+    return {
+      subject: "Economics & Finance",
+      prerequisites: ["Percentages", "Exponential Growth", "Basic Arithmetic"],
+    };
+  }
+  if (/revolution|history|war|dynasty|empire|civilization|కాకతీయ|చరిత్ర/i.test(lower)) {
+    return {
+      subject: "History",
+      prerequisites: ["Chronological Timelines", "Agrarian & Social Structures"],
+    };
+  }
+  if (/constitution|rights|संविधान|प्रस्तावना|अधिकार|government|politics/i.test(lower)) {
+    return {
+      subject: "Political Science",
+      prerequisites: ["Foundations of Governance", "Civil Liberties"],
+    };
+  }
 
   return {
     subject: "General Sciences & Humanities",
