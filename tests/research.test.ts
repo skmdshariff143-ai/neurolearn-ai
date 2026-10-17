@@ -22,7 +22,10 @@ import { WikipediaSource } from "../src/lib/research/sources/wikipedia";
 import { OpenAlexSource } from "../src/lib/research/sources/openalex";
 import { CrossrefSource } from "../src/lib/research/sources/crossref";
 import { OpenStaxOCWSource } from "../src/lib/research/sources/openstax-ocw";
-import { provider, ProviderError } from "../src/lib/providers";
+import { provider, ProviderError, generateLesson } from "../src/lib/providers";
+import { fixture } from "../src/lib/content";
+import { TavilySource } from "../src/lib/research/sources/tavily-adapter";
+import { requestSchema } from "../src/lib/domain";
 import type { NormalizedSource } from "../src/lib/research/types";
 
 afterEach(() => {
@@ -401,5 +404,131 @@ describe("Phase 6 — Educational Explanation Engine & JSON Repair", () => {
     expect(prompt).toContain('teach "Photosynthesis" in English at the Intermediate level');
     expect(prompt).toContain("[source:1]");
     expect(prompt).toContain("Light excites electrons in chlorophyll.");
+  });
+});
+
+describe("Phase 7-12 — Integrity, Error Handling & Multilingual Tests", () => {
+  it("never silently substitutes fixture material when an arbitrary topic is requested", () => {
+    const arbitaryLesson = fixture(
+      requestSchema.parse({
+        topic: "Quantum Superposition",
+        language: "English",
+        strategy: "lesson",
+      }),
+    );
+
+    expect(arbitaryLesson.title).toBe("Live provider needed");
+    expect(arbitaryLesson.explanation).toContain("Configure a live provider to teach other topics");
+    expect(arbitaryLesson.concepts).toEqual([]);
+  });
+
+  it("never silently returns a fixture lesson when live research is requested", async () => {
+    vi.stubEnv("AI_PROVIDER", "fixture");
+    await expect(
+      generateLesson(
+        requestSchema.parse({
+          topic: "Electrical transformers",
+          language: "English",
+          strategy: "lesson",
+          universalResearch: true,
+        }),
+      ),
+    ).rejects.toThrow("Research-to-lesson requires a live provider");
+  });
+
+  it("TavilySource gracefully returns empty when key is not configured", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "");
+    const source = new TavilySource();
+    const results = await source.search("Transformers", "Beginner", "English");
+    expect(results).toEqual([]);
+  });
+
+  it("TavilySource returns normalized sources when key is present and response is valid", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "valid-test-key");
+    const mockFetch = vi.fn().mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          results: [
+            {
+              title: "Electrical Transformer Theory",
+              url: "https://example.edu/transformer-theory",
+              content: "Transformers operate on mutual electromagnetic induction.",
+              score: 0.85,
+            },
+          ],
+        }),
+        { status: 200 },
+      ),
+    );
+    vi.stubGlobal("fetch", mockFetch);
+
+    const source = new TavilySource();
+    const results = await source.search("Transformer electromagnetic induction", "Beginner", "English", 2);
+    expect(results).toHaveLength(1);
+    expect(results[0].title).toBe("Electrical Transformer Theory");
+    expect(results[0].url).toBe("https://example.edu/transformer-theory");
+    expect(results[0].license).toBe("Educational Fair Use / Publisher Terms");
+  });
+
+  it.each([
+    ["Telugu", "te"],
+    ["Hindi", "hi"],
+    ["English", "en"],
+  ])("WikipediaSource maps language %s to subdomain %s", async (lang, subdomain) => {
+    const source = new WikipediaSource();
+    const mockFetch = vi.fn().mockResolvedValueOnce(
+      new Response(JSON.stringify({ pages: [] }), { status: 200 }),
+    );
+    vi.stubGlobal("fetch", mockFetch);
+
+    await source.search("Quantum", "Beginner", lang as "Telugu" | "Hindi" | "English", 1);
+    expect(mockFetch).toHaveBeenCalledWith(
+      expect.stringContaining(`https://${subdomain}.wikipedia.org`),
+      expect.any(Object),
+    );
+  });
+
+  it("buildUniversalLessonPrompt generates valid prompt for Telugu and Hindi preserving scientific terminology", () => {
+    const planTe = buildResearchPlan("యంత్రాలు (Transformers)", "Beginner", "Telugu");
+    const promptTe = buildUniversalLessonPrompt(planTe, []);
+    expect(promptTe).toContain("Telugu");
+    expect(promptTe).toContain("preserve standard international technical/scientific terminology");
+
+    const planHi = buildResearchPlan("ट्रांसफॉर्मर (Transformers)", "Intermediate", "Hindi");
+    const promptHi = buildUniversalLessonPrompt(planHi, []);
+    expect(promptHi).toContain("Hindi");
+  });
+
+  it("rejects broken URLs, non-HTTPS protocols and IP addresses in quality engine", () => {
+    const invalidSources: NormalizedSource[] = [
+      {
+        sourceId: "inv1",
+        title: "Internal Admin",
+        url: "https://10.0.0.1/admin",
+        publisher: "Private",
+        retrievedDate: "2026-10-17",
+        excerpt: "Internal dashboard data.",
+        contentType: "educational-web",
+        license: "None",
+        retrievalMethod: "search",
+        confidenceSignals: { relevanceScore: 0.9, termMatchCount: 2, authorityWeight: 0.9 },
+      },
+      {
+        sourceId: "inv2",
+        title: "Local Host",
+        url: "https://localhost:3000/notes",
+        publisher: "Local",
+        retrievedDate: "2026-10-17",
+        excerpt: "Local notes data.",
+        contentType: "educational-web",
+        license: "None",
+        retrievalMethod: "search",
+        confidenceSignals: { relevanceScore: 0.9, termMatchCount: 2, authorityWeight: 0.9 },
+      },
+    ];
+
+    const result = evaluateAndFilterSources(invalidSources, "Transformers");
+    expect(result.accepted).toHaveLength(0);
+    expect(result.rejectionReasons["unsafe-url"]).toBe(2);
   });
 });
