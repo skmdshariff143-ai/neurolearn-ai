@@ -211,6 +211,9 @@ describe("Phase 3 & 9 — Security, SSRF & Quality Engine", () => {
     ["https://192.168.1.1/router", false], // Private 192.168.x.x
     ["https://user:pass@example.com", false], // Userinfo in URL
     ["https://service.internal/api", false], // .internal domain
+    ["https://100.64.0.1/status", false], // CGNAT RFC 6598
+    ["https://192.0.2.1/status", false], // TEST-NET-1 RFC 5737
+    ["https://0.0.0.0/status", false], // 0.0.0.0
     ["javascript:alert(1)", false], // Non-HTTP protocol
   ])("isSafeExternalUrl validates %s as %s", (url, expectedSafe) => {
     expect(isSafeExternalUrl(url)).toBe(expectedSafe);
