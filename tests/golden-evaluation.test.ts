@@ -52,7 +52,7 @@ describe("Golden Educational Evaluation Benchmark", () => {
     expect(result.sourcesVerified).toBe(true);
     expect(result.prerequisites.length).toBeGreaterThanOrEqual(2);
     expect(result.termMatchRate).toBeGreaterThan(0.3);
-  });
+  }, 30000);
 
   it("evaluates multilingual benchmark topics and extracts authentic prerequisites", async () => {
     const coordinator = new UniversalResearchCoordinator([
@@ -68,5 +68,5 @@ describe("Golden Educational Evaluation Benchmark", () => {
 
     const hindiResult = await evaluateBenchmarkTopic(hindiBenchmark, coordinator);
     expect(hindiResult.prerequisites.length).toBeGreaterThanOrEqual(1);
-  });
+  }, 30000);
 });

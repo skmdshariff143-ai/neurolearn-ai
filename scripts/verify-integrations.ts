@@ -28,19 +28,20 @@ import {
   guestExists,
   databasePool,
 } from "../src/lib/postgres";
-type Service = "nebius" | "tavily" | "langsmith" | "postgres";
+type Service = "nebius" | "nvidia" | "tavily" | "langsmith" | "postgres";
 async function main() {
   const service = process.argv
     .find((s) =>
-      ["--nebius", "--tavily", "--langsmith", "--postgres"].includes(s),
+      ["--nebius", "--nvidia", "--tavily", "--langsmith", "--postgres"].includes(s),
     )
     ?.slice(2) as Service | undefined;
   if (!service) {
-    console.error("Choose --nebius, --tavily, --langsmith, or --postgres");
+    console.error("Choose --nebius, --nvidia, --tavily, --langsmith, or --postgres");
     process.exit(2);
   }
   const required: Record<Service, string[]> = {
     nebius: ["NEBIUS_API_KEY", "NEBIUS_MODEL"],
+    nvidia: ["NVIDIA_API_KEY"],
     tavily: ["TAVILY_API_KEY"],
     langsmith: ["LANGSMITH_API_KEY"],
     postgres: ["DATABASE_URL"],
@@ -90,6 +91,38 @@ async function main() {
           throw new Error(
             "Smoke requires actual Nebius provider, never fixtures",
           );
+        const start = Date.now();
+        const lesson = await p.generate(
+          requestSchema.parse({
+            topic: "Electrical transformers",
+            strategy: "simple",
+          }),
+          [],
+        );
+        Object.assign(evidence, {
+          model,
+          catalogConfirmed: true,
+          structuredLessonValid: true,
+          latencyMs: Date.now() - start,
+          usage: p.usage,
+          responseExcerpt: lesson.explanation.slice(0, 600),
+        });
+      } else if (service === "nvidia") {
+        const model = process.env.NVIDIA_MODEL ?? "nvidia/nemotron-3.5-super-vl-120b-a12b";
+        const listed = await fetch("https://integrate.api.nvidia.com/v1/models", {
+          headers: { Authorization: `Bearer ${process.env.NVIDIA_API_KEY}` },
+          signal: AbortSignal.timeout(15000),
+        });
+        if (!listed.ok) throw new Error(`NVIDIA Model catalog unavailable (HTTP ${listed.status})`);
+        const catalog = (await listed.json()) as { data?: { id: string }[] };
+        const availableModels = catalog.data?.map((item) => item.id) ?? [];
+        if (!availableModels.includes(model)) {
+          throw new Error(`Configured model ${model} not present in account catalog. Available: ${availableModels.slice(0, 5).join(", ")}...`);
+        }
+        process.env.AI_PROVIDER = "nvidia";
+        const p = provider();
+        if (p.kind !== "nvidia")
+          throw new Error("Smoke requires actual NVIDIA provider, never fixtures");
         const start = Date.now();
         const lesson = await p.generate(
           requestSchema.parse({

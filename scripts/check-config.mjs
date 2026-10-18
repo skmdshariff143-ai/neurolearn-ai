@@ -36,8 +36,8 @@ if (
   issues.push("RATE_LIMIT_BACKEND must be memory or postgres");
 if (!["true", "false"].includes(process.env.LANGSMITH_TRACING ?? "false"))
   issues.push("LANGSMITH_TRACING must be true or false");
-if (!["fixture", "nebius", "local"].includes(provider))
-  issues.push("AI_PROVIDER must be fixture, nebius, or local");
+if (!["fixture", "nebius", "nvidia", "gemini", "groq", "local"].includes(provider))
+  issues.push("AI_PROVIDER must be fixture, nebius, nvidia, gemini, groq, or local");
 if (
   production &&
   provider === "fixture" &&
@@ -51,6 +51,18 @@ if (provider === "nebius") {
       "Choose an exact NVIDIA Nemotron ID from the authenticated Nebius catalog",
     );
 }
+if (provider === "nvidia") {
+  if (!process.env.NVIDIA_API_KEY) issues.push("NVIDIA_API_KEY missing");
+  if (
+    process.env.NVIDIA_MODEL &&
+    !/^nvidia\//i.test(process.env.NVIDIA_MODEL)
+  )
+    issues.push("NVIDIA_MODEL should be an official NVIDIA model identifier (e.g. nvidia/nemotron-3.5-super-vl-120b-a12b)");
+}
+if (provider === "gemini" && !process.env.GEMINI_API_KEY)
+  issues.push("GEMINI_API_KEY missing");
+if (provider === "groq" && !process.env.GROQ_API_KEY)
+  issues.push("GROQ_API_KEY missing");
 if (provider === "local" && !process.env.LOCAL_AI_MODEL)
   issues.push("LOCAL_AI_MODEL missing");
 if (production && provider === "local")

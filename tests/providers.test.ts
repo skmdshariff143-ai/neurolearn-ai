@@ -243,6 +243,66 @@ describe("provider safety", () => {
     vi.stubEnv("NEBIUS_API_KEY", "");
     expect(() => provider()).toThrow("not configured");
   });
+  it("rejects missing NVIDIA keys without falling back", () => {
+    vi.stubEnv("AI_PROVIDER", "nvidia");
+    vi.stubEnv("NVIDIA_API_KEY", "");
+    expect(() => provider()).toThrow("NVIDIA is not configured");
+  });
+  it("initializes NVIDIA provider with default Nemotron model and server-side credentials", () => {
+    vi.stubEnv("AI_PROVIDER", "nvidia");
+    vi.stubEnv("NVIDIA_API_KEY", "nvapi-test-dummy-key");
+    const p = provider();
+    expect(p.kind).toBe("nvidia");
+  });
+  it("NVIDIA provider completes structured lesson with mocked response", async () => {
+    vi.stubEnv("AI_PROVIDER", "nvidia");
+    vi.stubEnv("NVIDIA_API_KEY", "nvapi-test-dummy-key");
+    const mockLesson = {
+      title: "Understanding Electromagnetic Induction",
+      explanation: "A changing magnetic flux induces an electromotive force (EMF).",
+      check: "Why is alternating current required?",
+      concepts: ["Magnetic Flux", "Faraday's Law"],
+    };
+    const mockFetch = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          choices: [
+            {
+              message: {
+                content: JSON.stringify(mockLesson),
+              },
+            },
+          ],
+          usage: { prompt_tokens: 120, completion_tokens: 80 },
+        }),
+        { status: 200 },
+      ),
+    );
+    vi.stubGlobal("fetch", mockFetch);
+
+    const p = provider();
+    const lesson = await p.generate(
+      requestSchema.parse({
+        topic: "Electrical transformers",
+        language: "English",
+        strategy: "lesson",
+      }),
+      [],
+    );
+
+    expect(lesson.title).toBe(mockLesson.title);
+    expect(lesson.explanation).toContain("changing magnetic flux");
+    expect(lesson.concepts).toContain("Magnetic Flux");
+    expect(mockFetch).toHaveBeenCalledWith(
+      "https://integrate.api.nvidia.com/v1/chat/completions",
+      expect.objectContaining({
+        method: "POST",
+        headers: expect.objectContaining({
+          Authorization: "Bearer nvapi-test-dummy-key",
+        }),
+      }),
+    );
+  });
   it("requires explicit demo opt-in in production", () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("AI_PROVIDER", "fixture");

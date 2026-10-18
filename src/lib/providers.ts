@@ -178,6 +178,18 @@ export function provider(): AIProvider {
       process.env.NEBIUS_MODEL,
     );
   }
+  if (kind === "nvidia") {
+    if (!process.env.NVIDIA_API_KEY)
+      throw new ProviderError(
+        "NVIDIA is not configured. Set NVIDIA_API_KEY on the server.",
+      );
+    return new CompatibleProvider(
+      kind,
+      "https://integrate.api.nvidia.com/v1",
+      process.env.NVIDIA_API_KEY,
+      process.env.NVIDIA_MODEL ?? "nvidia/nemotron-3.5-super-vl-120b-a12b",
+    );
+  }
   if (kind === "gemini") {
     if (!process.env.GEMINI_API_KEY)
       throw new ProviderError(

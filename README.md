@@ -29,8 +29,8 @@ Open http://localhost:3000. Choose Learn → Electrical transformers → classro
 ## Providers
 
 - `AI_PROVIDER=fixture`: curated demonstrations of transformers, Python loops, and quadratics. Production requires `ALLOW_DEMO_MODE=true` and retains labels.
-- `AI_PROVIDER=fixture`: curated demonstrations of transformers, Python loops, and quadratics. Production requires `ALLOW_DEMO_MODE=true` and retains labels.
-- `AI_PROVIDER=nebius`: set server-side `NEBIUS_API_KEY` and the exact `NEBIUS_MODEL` ID available in your Token Factory account. Use an NVIDIA Nemotron model for the intended hackathon track. No silent fallback.
+- `AI_PROVIDER=nebius`: set server-side `NEBIUS_API_KEY` and the exact `NEBIUS_MODEL` ID available in your Token Factory account. Mandatory integration track for the Nebius × NVIDIA Global AI Hackathon. No silent fallback.
+- `AI_PROVIDER=nvidia`: direct NVIDIA API adapter (`https://integrate.api.nvidia.com/v1`). Set server-side `NVIDIA_API_KEY` and optional `NVIDIA_MODEL` (defaults to `nvidia/nemotron-3.5-super-vl-120b-a12b`). Note: This standalone NVIDIA integration is distinct from Nebius Token Factory and does not alone satisfy the Nebius hackathon runtime requirement.
 - `AI_PROVIDER=gemini`: Google Gemini free-tier developer adapter (set `GEMINI_API_KEY`).
 - `AI_PROVIDER=groq`: Groq free-tier developer adapter (set `GROQ_API_KEY`).
 - `AI_PROVIDER=local`: use a loopback OpenAI-compatible inference server, e.g. Ollama's `/v1` endpoint, with `LOCAL_AI_MODEL` set to an installed model. Hardware/model availability has not been verified.
