@@ -29,8 +29,10 @@ export function Labs() {
       <div className="toolbar" style={{ marginBottom: 24 }}>
         {[
           ["transformers", "Transformers"],
+          ["ohms_law", "Ohm's Law"],
           ["python", "Python trace"],
           ["quadratics", "Quadratic graph"],
+          ["photosynthesis", "Photosynthesis"],
         ].map(([id, label]) => (
           <Button
             key={id}
@@ -256,6 +258,151 @@ export function Labs() {
             Graph window: x from −6 to 6; y from roughly −19 to 19. Portions
             outside the window are clipped.
           </p>
+        </div>
+      )}
+      {lab === "ohms_law" && (
+        <div className="card stack">
+          <h2>Ohm&apos;s Law: Voltage, Current, and Resistance.</h2>
+          <div
+            aria-label="Ohm's law formula"
+            dangerouslySetInnerHTML={{
+              __html: katex.renderToString("V = I \\times R \\implies I = \\frac{V}{R}", {
+                throwOnError: false,
+                output: "htmlAndMathml",
+              }),
+            }}
+          />
+          <div className="form-grid">
+            <div>
+              <label htmlFor="voltage">Voltage (V): {turns / 20} V</label>
+              <input
+                id="voltage"
+                type="range"
+                min={2}
+                max={24}
+                step={2}
+                value={turns / 20}
+                onChange={(e) => setTurns(Number(e.target.value) * 20)}
+              />
+            </div>
+            <div>
+              <label htmlFor="resistance">Resistance (R): {a * 5 + 35} Ω</label>
+              <input
+                id="resistance"
+                type="range"
+                min={10}
+                max={100}
+                step={5}
+                value={a * 5 + 35}
+                onChange={(e) => setA(Math.round((Number(e.target.value) - 35) / 5))}
+              />
+            </div>
+          </div>
+          {(() => {
+            const v = turns / 20;
+            const r = a * 5 + 35;
+            const current = (v / r) * 1000; // in mA
+            const power = (v * v) / r;
+            return (
+              <>
+                <svg
+                  className="lab-svg"
+                  viewBox="0 0 500 240"
+                  role="img"
+                  aria-label={`Circuit: ${v} Volts across ${r} Ohms resulting in ${current.toFixed(1)} milliamperes.`}
+                >
+                  <rect x="80" y="40" width="340" height="160" fill="none" stroke="currentColor" strokeWidth="4" rx="8" />
+                  <circle cx="80" cy="120" r="24" fill="var(--surface)" stroke="#b77644" strokeWidth="4" />
+                  <text x="72" y="125" fill="currentColor" fontWeight="bold">V</text>
+                  <rect x="220" y="30" width="60" height="20" fill="var(--surface)" stroke="#78994c" strokeWidth="4" />
+                  <text x="235" y="45" fill="currentColor" fontSize="12" fontWeight="bold">R</text>
+                  <circle cx="420" cy="120" r="20" fill="var(--surface)" stroke="currentColor" strokeWidth="3" />
+                  <text x="414" y="125" fill="currentColor" fontWeight="bold">A</text>
+                  <path d="M 170 30 L 190 40 L 170 50 Z" fill="#b77644" />
+                  <text x="175" y="75" fill="currentColor" fontSize="13">I →</text>
+                  <text x="210" y="140" fill="currentColor" fontSize="18" fontWeight="bold">
+                    I = {current.toFixed(1)} mA
+                  </text>
+                  <text x="210" y="168" fill="currentColor" fontSize="13">
+                    Power dissipation: {power.toFixed(2)} W
+                  </text>
+                </svg>
+                <div className="notice" role="status">
+                  <strong>Relationship:</strong> Doubling voltage doubles current (direct proportion). Doubling resistance halves current (inverse proportion).
+                </div>
+              </>
+            );
+          })()}
+        </div>
+      )}
+      {lab === "photosynthesis" && (
+        <div className="card stack">
+          <h2>Photosynthesis & Energy Conversion.</h2>
+          <div
+            aria-label="Photosynthesis overall formula"
+            dangerouslySetInnerHTML={{
+              __html: katex.renderToString(
+                "6\\text{CO}_2 + 6\\text{H}_2\\text{O} + \\text{Light} \\longrightarrow \\text{C}_6\\text{H}_{12}\\text{O}_6 + 6\\text{O}_2",
+                { throwOnError: false, output: "htmlAndMathml" },
+              ),
+            }}
+          />
+          <div className="form-grid">
+            <div>
+              <label htmlFor="light-intensity">Light intensity: {b + 7} / 13</label>
+              <input
+                id="light-intensity"
+                type="range"
+                min={-6}
+                max={6}
+                value={b}
+                onChange={(e) => setB(Number(e.target.value))}
+              />
+            </div>
+            <div>
+              <label htmlFor="co2-level">CO₂ concentration: {c + 7} / 13</label>
+              <input
+                id="co2-level"
+                type="range"
+                min={-6}
+                max={6}
+                value={c}
+                onChange={(e) => setC(Number(e.target.value))}
+              />
+            </div>
+          </div>
+          {(() => {
+            const light = b + 7;
+            const co2 = c + 7;
+            const rate = Math.min(light, co2) * 7.5;
+            const limitingFactor = light < co2 ? "Light intensity" : light > co2 ? "CO₂ availability" : "Balanced";
+            return (
+              <>
+                <svg
+                  className="lab-svg"
+                  viewBox="0 0 500 240"
+                  role="img"
+                  aria-label={`Photosynthesis rate: ${rate.toFixed(0)} percent. Limiting factor: ${limitingFactor}.`}
+                >
+                  <rect x="40" y="40" width="180" height="160" rx="12" fill="none" stroke="#507842" strokeWidth="4" />
+                  <text x="50" y="70" fill="currentColor" fontWeight="bold">Light Reactions (Thylakoid)</text>
+                  <text x="50" y="100" fill="currentColor" fontSize="12">H₂O → O₂ (Photolysis)</text>
+                  <text x="50" y="125" fill="currentColor" fontSize="12">Generates ATP & NADPH</text>
+                  <path d="M 225 110 L 275 110" stroke="currentColor" strokeWidth="3" markerEnd="url(#arrow)" />
+                  <text x="232" y="100" fill="currentColor" fontSize="11">ATP / NADPH</text>
+                  <rect x="280" y="40" width="180" height="160" rx="12" fill="none" stroke="#b77644" strokeWidth="4" />
+                  <text x="290" y="70" fill="currentColor" fontWeight="bold">Calvin Cycle (Stroma)</text>
+                  <text x="290" y="100" fill="currentColor" fontSize="12">CO₂ Fixation (Rubisco)</text>
+                  <text x="290" y="125" fill="currentColor" fontSize="12">Produces Glucose (G3P)</text>
+                  <rect x="150" y="210" width="200" height="14" fill="#dce4dc" rx="7" />
+                  <rect x="150" y="210" width={rate * 2} height="14" fill="#678147" rx="7" />
+                </svg>
+                <div className="notice" role="status">
+                  <strong>Photosynthetic Rate: {rate.toFixed(0)}%</strong> · Current Limiting Factor: <em>{limitingFactor}</em> (Liebig&apos;s Law of the Minimum).
+                </div>
+              </>
+            );
+          })()}
         </div>
       )}
     </>

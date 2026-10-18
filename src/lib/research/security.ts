@@ -37,7 +37,16 @@ const PROMPT_INJECTION_PATTERNS = [
   /data\s*:\s*text\/html/gi,
 ];
 
-export function isSafeExternalUrl(rawUrl: string): boolean {
+export const TRUSTED_RESEARCH_DOMAINS = [
+  "wikipedia.org",
+  "openalex.org",
+  "crossref.org",
+  "openstax.org",
+  "mit.edu",
+  "doi.org",
+];
+
+export function isSafeExternalUrl(rawUrl: string, requireTrustedHost = false): boolean {
   try {
     const parsed = new URL(rawUrl);
     if (parsed.protocol !== "https:") return false;
@@ -47,6 +56,13 @@ export function isSafeExternalUrl(rawUrl: string): boolean {
     const hostname = parsed.hostname.toLowerCase();
     for (const pattern of BLOCKED_HOST_PATTERNS) {
       if (pattern.test(hostname)) return false;
+    }
+
+    if (requireTrustedHost) {
+      const isTrusted = TRUSTED_RESEARCH_DOMAINS.some(
+        (domain) => hostname === domain || hostname.endsWith(`.${domain}`),
+      );
+      if (!isTrusted) return false;
     }
 
     return true;

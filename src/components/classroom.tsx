@@ -226,8 +226,7 @@ export function Classroom() {
         <div className="stack">
           <div className="notice">
             Provider responses carry their mode below. Curated demonstrations
-            are deterministic fixtures, not live AI. Live Nebius verification is
-            blocked until inference access is available.
+            are deterministic fixtures, not live AI. Direct NVIDIA Nemotron, Google Gemini, Groq, and local Ollama are supported for real inference; Nebius Token Factory access remains the primary hackathon integration target.
           </div>
           <form
             className="card stack"

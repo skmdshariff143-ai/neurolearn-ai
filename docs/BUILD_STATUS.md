@@ -10,7 +10,7 @@ All 12 phases implemented, verified, and passing:
 - Explanation Engine: Universal structured lesson prompt, bounded JSON repair for malformed outputs, multilingual support (English, Telugu, Hindi), prerequisite detection, and citation validation.
 - Adaptive Classroom UI: Universal research toggle, learning level selection, real progress stage indicators (Finding sources -> Checking evidence -> Preparing explanation -> Creating examples -> Ready to learn), verified source citation cards with licenses and publishers, and new adaptive follow-up actions (Explain prerequisites, Why my answer is wrong, Suggest next lesson).
 - Automated Verification Results:
-  - 143 Vitest unit/integration tests passing (18 test files, 100% pass rate) including Golden Educational Evaluation Benchmark.
+  - 146 Vitest unit/integration tests passing (18 test files, 100% pass rate) including Golden Educational Benchmark and standalone NVIDIA Nemotron provider tests.
   - 20 Playwright E2E browser tests passing (Desktop & Mobile viewports).
   - 8 Playwright Preview E2E tests passing (Fixture isolation & 0 WCAG 2.1 AA Axe violations across all routes).
   - TypeScript typecheck (tsc --noEmit): 0 errors.

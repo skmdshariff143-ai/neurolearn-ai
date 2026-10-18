@@ -13,6 +13,7 @@ export function GET() {
       nebiusConfigured: Boolean(
         process.env.NEBIUS_API_KEY && process.env.NEBIUS_MODEL,
       ),
+      nvidiaConfigured: Boolean(process.env.NVIDIA_API_KEY),
       liveVerification:
         "Not established by configuration; run smoke tests and inspect evidence.",
       researchConfigured: Boolean(process.env.TAVILY_API_KEY),
